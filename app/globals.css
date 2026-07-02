@@ -1,0 +1,212 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* §6.2 Color tokens — single source of truth */
+  --bg: #0a0c10;
+  --surface: #12151c;
+  --surface-2: #1a1f29;
+  --border: #232a36;
+  --text: #e6eaf2;
+  --text-muted: #8b94a7;
+  --accent-stream: #3dd8c4;
+  --accent-compute: #f5a742;
+  --accent-pinned: #6e8bff;
+  --danger: #ff5c6c;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--accent-stream) 30%, transparent);
+    color: var(--text);
+  }
+
+  /* Visible keyboard focus — teal, per §6.4 */
+  :focus-visible {
+    outline: 2px solid var(--accent-stream);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  /* Tabular figures for all data/mono content */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* Hairline section divider (§6.4 — no heavy boxes) */
+  .rule {
+    border-top: 1px solid var(--border);
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.875rem;
+    padding-inline: 1.25rem;
+    border-radius: 6px;
+    font-weight: 550;
+    font-size: 0.9375rem;
+    color: #04110f;
+    background: var(--accent-stream);
+    transition: filter 0.18s ease, transform 0.18s ease;
+  }
+  .btn-primary:hover {
+    filter: brightness(1.08);
+  }
+  .btn-primary:active {
+    transform: translateY(1px);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.875rem;
+    padding-inline: 1.25rem;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    transition: border-color 0.18s ease, background 0.18s ease;
+  }
+  .btn-secondary:hover {
+    border-color: color-mix(in srgb, var(--text-muted) 60%, transparent);
+    background: color-mix(in srgb, var(--surface-2) 70%, var(--surface));
+  }
+
+  /* Wordmark "flip" dot — the layer that flips between stream/compute state */
+  .flip-dot {
+    background: var(--accent-stream);
+    animation: flip-dot 3.2s steps(1, end) infinite;
+  }
+  @keyframes flip-dot {
+    0%,
+    45% {
+      background: var(--accent-stream);
+    }
+    50%,
+    95% {
+      background: var(--accent-compute);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flip-dot {
+      animation: none;
+    }
+  }
+
+  /* Double-buffer flip: A executes (amber, full) while B streams in (teal fill),
+     then they swap. Period 3.6s, B offset by half. */
+  .buffer-a,
+  .buffer-b {
+    height: 100%;
+    animation: buffer-a 3.6s linear infinite;
+  }
+  .buffer-b {
+    animation-name: buffer-b;
+  }
+  @keyframes buffer-a {
+    0% {
+      width: 100%;
+      background: var(--accent-compute);
+    }
+    48% {
+      width: 100%;
+      background: var(--accent-compute);
+    }
+    50% {
+      width: 0%;
+      background: var(--accent-stream);
+    }
+    98%,
+    100% {
+      width: 100%;
+      background: var(--accent-stream);
+    }
+  }
+  @keyframes buffer-b {
+    0% {
+      width: 0%;
+      background: var(--accent-stream);
+    }
+    48% {
+      width: 100%;
+      background: var(--accent-stream);
+    }
+    50% {
+      width: 100%;
+      background: var(--accent-compute);
+    }
+    98%,
+    100% {
+      width: 100%;
+      background: var(--accent-compute);
+    }
+  }
+  /* Reduced motion: freeze in a legible static state (A executing, B loaded) */
+  @media (prefers-reduced-motion: reduce) {
+    .buffer-a {
+      animation: none;
+      width: 100%;
+      background: var(--accent-compute);
+    }
+    .buffer-b {
+      animation: none;
+      width: 100%;
+      background: var(--accent-stream);
+    }
+  }
+}
