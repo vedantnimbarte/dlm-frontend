@@ -3,17 +3,47 @@
 @tailwind utilities;
 
 :root {
-  /* §6.2 Color tokens — single source of truth */
-  --bg: #0a0c10;
-  --surface: #12151c;
-  --surface-2: #1a1f29;
-  --border: #232a36;
-  --text: #e6eaf2;
-  --text-muted: #8b94a7;
+  /* Color tokens — single source of truth.
+     Chrome is the Raycast neutral near-black ladder; the saturated accents
+     below are reserved for data-viz / product illustrations only (never chrome). */
+
+  /* Surface ladder — canvas → surface → elevated → card */
+  --bg: #07080a;
+  --surface: #0d0d0d;
+  --surface-2: #101111;
+  --surface-card: #121212;
+
+  /* Borders — hairline is the universal 1px card edge */
+  --border: #242728;
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  /* Text */
+  --text: #f4f4f6;
+  --text-muted: #9c9c9d;
+
+  /* Primary action — the universal white CTA pill */
+  --primary: #ffffff;
+  --primary-pressed: #e8e8e8;
+  --on-primary: #000000;
+
+  /* Illustration accents — inside VRAM viz, zone diagram, terminal, tags only.
+     teal = streaming, amber = compute, blue = pinned, red = error. */
   --accent-stream: #3dd8c4;
   --accent-compute: #f5a742;
   --accent-pinned: #6e8bff;
   --danger: #ff5c6c;
+
+  /* Liquid glass — frosted translucent surfaces refracting the aurora */
+  --glass-bg: rgba(255, 255, 255, 0.045);
+  --glass-bg-strong: rgba(255, 255, 255, 0.072);
+  --glass-border: rgba(255, 255, 255, 0.09);
+  --glass-hi: rgba(255, 255, 255, 0.16);
+  --glass-shadow: 0 16px 50px -20px rgba(0, 0, 0, 0.75);
+
+  /* Aurora — the drifting brand haze behind the frost */
+  --aurora-teal: #3dd8c4;
+  --aurora-amber: #f5a742;
+  --aurora-indigo: #6e8bff;
 }
 
 @layer base {
@@ -41,19 +71,21 @@
   body {
     background-color: var(--bg);
     color: var(--text);
-    font-feature-settings: "cv11", "ss01";
+    /* ss03 stylistic set (alternate single-story g) is the brand's signature
+       Inter rendering; calt/kern/liga complete the airy default set. */
+    font-feature-settings: "calt", "kern", "liga", "ss03";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--accent-stream) 30%, transparent);
+    background: color-mix(in srgb, var(--text) 22%, transparent);
     color: var(--text);
   }
 
-  /* Visible keyboard focus — teal, per §6.4 */
+  /* Visible keyboard focus — monochrome white, keeping accents off chrome */
   :focus-visible {
-    outline: 2px solid var(--accent-stream);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
     border-radius: 3px;
   }
@@ -86,45 +118,342 @@
     border-top: 1px solid var(--border);
   }
 
+  /* The universal primary action: a luminous white pill with a specular sweep. */
   .btn-primary {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    height: 2.875rem;
+    height: 2.625rem;
     padding-inline: 1.25rem;
-    border-radius: 6px;
-    font-weight: 550;
-    font-size: 0.9375rem;
-    color: #04110f;
-    background: var(--accent-stream);
-    transition: filter 0.18s ease, transform 0.18s ease;
+    border-radius: 9999px;
+    overflow: hidden;
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.1px;
+    color: var(--on-primary);
+    background: linear-gradient(180deg, #ffffff 0%, #e9e9ec 100%);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+      0 8px 24px -10px rgba(255, 255, 255, 0.35);
+    transition: transform 0.18s ease, box-shadow 0.2s ease;
+  }
+  /* liquid sheen sweep on hover */
+  .btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 25%,
+      rgba(255, 255, 255, 0.85) 50%,
+      transparent 75%
+    );
+    transform: translateX(-120%);
+    transition: transform 0.6s ease;
+  }
+  .btn-primary:hover::after {
+    transform: translateX(120%);
   }
   .btn-primary:hover {
-    filter: brightness(1.08);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+      0 10px 30px -8px rgba(255, 255, 255, 0.45);
   }
   .btn-primary:active {
     transform: translateY(1px);
   }
 
+  /* Frosted-glass secondary — translucent, refracting the aurora. */
   .btn-secondary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    height: 2.875rem;
+    height: 2.625rem;
     padding-inline: 1.25rem;
-    border-radius: 6px;
+    border-radius: 9999px;
     font-weight: 500;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
+    letter-spacing: 0.1px;
     color: var(--text);
-    background: var(--surface-2);
-    border: 1px solid var(--border);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    box-shadow: inset 0 1px 0 0 var(--glass-hi);
     transition: border-color 0.18s ease, background 0.18s ease;
   }
   .btn-secondary:hover {
-    border-color: color-mix(in srgb, var(--text-muted) 60%, transparent);
-    background: color-mix(in srgb, var(--surface-2) 70%, var(--surface));
+    border-color: var(--border-strong);
+    background: var(--glass-bg-strong);
+  }
+
+  /* ── Liquid glass ─────────────────────────────────────────────────────
+     Frosted translucent surface. Pair with a rounded-* utility for radius.
+     The inset top-edge highlight + soft drop give the pane of glass its lift. */
+  .glass {
+    position: relative;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid var(--glass-border);
+    box-shadow: inset 0 1px 0 0 var(--glass-hi), var(--glass-shadow);
+  }
+  .glass-strong {
+    background: var(--glass-bg-strong);
+  }
+
+  /* Cursor-following specular sheen. Add alongside .glass; a pointer script
+     sets --mx/--my/--sheen. Falls back to invisible (opacity 0) without JS. */
+  .glass-interactive::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+      240px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(255, 255, 255, 0.1),
+      transparent 62%
+    );
+    opacity: var(--sheen, 0);
+    transition: opacity 0.35s ease;
+  }
+  .glass-interactive > * {
+    position: relative;
+  }
+
+  /* ── Aurora ambient background ─────────────────────────────────────────
+     Fixed brand haze the frost refracts. Sits behind all content. */
+  .aurora {
+    position: fixed;
+    inset: -25%;
+    z-index: -3;
+    pointer-events: none;
+    filter: blur(90px) saturate(135%);
+    opacity: 0.55;
+  }
+  .aurora__blob {
+    position: absolute;
+    border-radius: 50%;
+    mix-blend-mode: screen;
+    will-change: transform;
+  }
+  .aurora__blob--1 {
+    top: -6%;
+    left: 8%;
+    width: 46vw;
+    height: 46vw;
+    background: radial-gradient(circle, var(--aurora-teal), transparent 68%);
+    animation: drift-1 22s ease-in-out infinite alternate;
+  }
+  .aurora__blob--2 {
+    top: 8%;
+    right: 2%;
+    width: 40vw;
+    height: 40vw;
+    background: radial-gradient(circle, var(--aurora-amber), transparent 66%);
+    animation: drift-2 27s ease-in-out infinite alternate;
+  }
+  .aurora__blob--3 {
+    bottom: -12%;
+    left: 30%;
+    width: 44vw;
+    height: 44vw;
+    background: radial-gradient(circle, var(--aurora-indigo), transparent 68%);
+    animation: drift-3 31s ease-in-out infinite alternate;
+  }
+  @keyframes drift-1 {
+    to {
+      transform: translate3d(14%, 10%, 0) scale(1.12);
+    }
+  }
+  @keyframes drift-2 {
+    to {
+      transform: translate3d(-12%, 8%, 0) scale(1.08);
+    }
+  }
+  @keyframes drift-3 {
+    to {
+      transform: translate3d(8%, -12%, 0) scale(1.14);
+    }
+  }
+
+  /* Fine film grain — premium texture over the aurora. */
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Edge vignette — pulls focus to center, deepens the near-black frame. */
+  .vignette {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background: radial-gradient(
+      120% 90% at 50% 0%,
+      transparent 45%,
+      rgba(4, 5, 7, 0.55) 100%
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .aurora__blob--1,
+    .aurora__blob--2,
+    .aurora__blob--3 {
+      animation: none;
+    }
+    .btn-primary::after {
+      transition: none;
+    }
+  }
+
+  /* ── Brand mark ───────────────────────────────────────────────────────── */
+  .logo-mark {
+    object-fit: contain;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.3s ease;
+  }
+  a:hover .logo-mark {
+    transform: translateY(-1px) scale(1.04);
+    filter: drop-shadow(0 3px 10px rgba(61, 216, 196, 0.25));
+  }
+
+  /* ── Nav: top state (no logo, centered links) ⇄ scrolled (logo in, links
+     slide right). The two flex spacers carry the motion — their flex-grow
+     transitions, so the link cluster glides instead of snapping. */
+  .nav-logo {
+    display: inline-flex;
+    overflow: hidden;
+    transition: opacity 0.4s ease, max-width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-spacer {
+    transition: flex-grow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* Left-side width counterweight — mirrors the CTA at the top so links sit at
+     true center, then collapses on scroll to free the track for the glide. */
+  .nav-ghost {
+    overflow: hidden;
+    transition: max-width 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      margin 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @media (min-width: 768px) {
+    .nav-ghost[data-collapsed="false"] {
+      max-width: 150px;
+    }
+    .nav-ghost[data-collapsed="true"] {
+      max-width: 0;
+      margin-right: 0;
+    }
+  }
+  @media (min-width: 768px) {
+    .nav-logo[data-show="false"] {
+      max-width: 0;
+      opacity: 0;
+      transform: translateX(-10px);
+      pointer-events: none;
+    }
+    .nav-logo[data-show="true"] {
+      max-width: 72px;
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-logo,
+    .nav-spacer,
+    .nav-ghost {
+      transition: none;
+    }
+  }
+
+  /* ── Hero logo-reveal moment ──────────────────────────────────────────── */
+  .hero-mark-stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    perspective: 1000px;
+  }
+  .hero-mark-well {
+    position: absolute;
+    inset: -18%;
+    background: radial-gradient(
+      circle at 50% 46%,
+      rgba(4, 5, 7, 0.85) 30%,
+      transparent 70%
+    );
+    filter: blur(6px);
+  }
+  .hero-mark-tilt {
+    position: relative;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(0.86);
+    opacity: 0;
+    filter: blur(14px);
+    transition: transform 0.4s ease-out, opacity 0.9s ease,
+      filter 0.9s ease;
+    transform-style: preserve-3d;
+  }
+  .hero-mark-tilt.is-revealed {
+    opacity: 1;
+    filter: blur(0);
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1);
+  }
+  .hero-mark-img {
+    display: block;
+    width: min(56%, 272px);
+    height: auto;
+    margin-inline: auto;
+    filter: drop-shadow(0 24px 50px rgba(0, 0, 0, 0.7));
+  }
+  /* one-time sheen sweep across the steel after reveal */
+  .hero-mark-sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    background: linear-gradient(
+      110deg,
+      transparent 42%,
+      rgba(255, 255, 255, 0.14) 50%,
+      transparent 58%
+    );
+    opacity: 0;
+    mix-blend-mode: screen;
+  }
+  .hero-mark-tilt.is-revealed .hero-mark-sheen {
+    animation: mark-sheen 1.4s ease 0.6s 1;
+  }
+  @keyframes mark-sheen {
+    0% {
+      opacity: 0;
+      transform: translateX(-30%);
+    }
+    35% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(30%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-mark-tilt {
+      opacity: 1;
+      filter: none;
+      transform: scale(1);
+      transition: none;
+    }
+    .hero-mark-tilt.is-revealed .hero-mark-sheen {
+      animation: none;
+    }
   }
 
   /* Wordmark "flip" dot — the layer that flips between stream/compute state */
