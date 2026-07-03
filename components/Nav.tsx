@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Wordmark } from "./Wordmark";
+import { Logo } from "./Logo";
 
 const LINKS = [
   { href: "/how-it-works", label: "How it works" },
@@ -9,7 +9,7 @@ const LINKS = [
   { href: "/get-started", label: "Get started" },
 ];
 
-const REPO = "https://github.com/cloudairy/flip";
+const REPO = "https://github.com/vedantnimbarte/Flip";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -24,42 +24,58 @@ export function Nav() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-colors duration-200 ${
+      className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b border-border bg-bg/85 backdrop-blur-md"
+          ? "border-b border-glass-border bg-white/[0.04] backdrop-blur-xl backdrop-saturate-150 shadow-[0_8px_30px_-18px_rgba(0,0,0,0.8)]"
           : "border-b border-transparent"
       }`}
     >
-      <nav className="shell flex h-16 items-center justify-between" aria-label="Primary">
-        <a href="/" className="flex items-center gap-2.5 rounded" aria-label="flip home">
-          <Wordmark />
+      <nav className="shell flex h-16 items-center gap-2" aria-label="Primary">
+        {/* Brand mark — hidden at the top of the page, slides in once scrolled
+            (desktop). Always visible on mobile, where there's no center rail. */}
+        <a
+          href="/"
+          className="nav-logo items-center rounded-full p-0.5"
+          data-show={scrolled}
+          aria-label="flip — home"
+        >
+          <Logo size={32} priority />
         </a>
 
-        <div className="hidden items-center gap-8 md:flex">
-          {LINKS.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="text-[0.9375rem] text-text-muted transition-colors hover:text-text"
-            >
-              {l.label}
-            </a>
-          ))}
-          <a
-            href={REPO}
-            className="btn-secondary h-9 px-3.5 text-[0.875rem]"
-            target="_blank"
-            rel="noreferrer"
+        {/* Desktop rail: spacers carry the center→right glide of the links.
+            A hidden ghost of the CTA on the left balances the real CTA's width,
+            so equal spacers put the links at true center (not just track-center). */}
+        <div className="hidden flex-1 items-center md:flex">
+          <span
+            className="nav-ghost mr-8 invisible"
+            data-collapsed={scrolled}
+            aria-hidden
           >
-            <GitHubGlyph />
-            <span>GitHub</span>
-            <span className="text-text-muted">★</span>
-          </a>
+            {githubCta(false)}
+          </span>
+          <span className="nav-spacer" style={{ flexGrow: 1 }} aria-hidden />
+          <div className="flex items-center gap-8">
+            {LINKS.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                className="text-[0.9375rem] text-text-muted transition-colors hover:text-text"
+              >
+                {l.label}
+              </a>
+            ))}
+          </div>
+          <span
+            className="nav-spacer"
+            style={{ flexGrow: scrolled ? 0 : 1 }}
+            aria-hidden
+          />
+          <span className="ml-8">{githubCta(true)}</span>
         </div>
 
         <button
           type="button"
-          className="flex h-10 w-10 items-center justify-center rounded-btn border border-border text-text-muted md:hidden"
+          className="ml-auto flex h-10 w-10 items-center justify-center rounded-btn border border-border text-text-muted md:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label="Toggle menu"
@@ -70,13 +86,16 @@ export function Nav() {
       </nav>
 
       {open && (
-        <div id="mobile-menu" className="border-t border-border bg-bg md:hidden">
+        <div
+          id="mobile-menu"
+          className="glass border-x-0 border-b-0 md:hidden"
+        >
           <div className="shell flex flex-col gap-1 py-3">
             {LINKS.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
-                className="rounded-btn px-2 py-2.5 text-text-muted hover:bg-surface hover:text-text"
+                className="rounded-btn px-2 py-2.5 text-text-muted hover:bg-white/5 hover:text-text"
                 onClick={() => setOpen(false)}
               >
                 {l.label}
@@ -95,6 +114,26 @@ export function Nav() {
         </div>
       )}
     </header>
+  );
+}
+
+// Shared GitHub CTA. interactive=true → the real link; false → an inert clone
+// used as a left-side width counterweight so the desktop links center exactly.
+function githubCta(interactive: boolean) {
+  const inner = (
+    <>
+      <GitHubGlyph />
+      <span>GitHub</span>
+      <span className="text-text-muted">★</span>
+    </>
+  );
+  const cls = "btn-secondary h-9 px-3.5 text-[0.875rem]";
+  return interactive ? (
+    <a href={REPO} className={cls} target="_blank" rel="noreferrer">
+      {inner}
+    </a>
+  ) : (
+    <span className={cls}>{inner}</span>
   );
 }
 
