@@ -15,7 +15,7 @@ export function DataPathPipeline() {
       <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
         {STAGES.map((s, i) => (
           <Reveal key={s.n} delay={i * 110}>
-            <div className="group relative flex h-full flex-col rounded-card border border-border bg-surface p-4">
+            <div className="glass glass-interactive group relative flex h-full flex-col rounded-card p-4">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[0.72rem] text-accent-stream">
                   {s.n}

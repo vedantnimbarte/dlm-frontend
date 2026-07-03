@@ -1,7 +1,10 @@
 import { Reveal } from "./Reveal";
 
-// No decorative 01/02/03 here — the grid isn't a sequence. Each card carries a
-// small state marker where the feature is a roadmap item, per §8 (honesty).
+// A bento of glass tiles — the marquee feature in each row runs wide (2fr),
+// its partner narrow (1fr), giving the grid rhythm without inventing a
+// sequence. Each card still carries an honest shipped/planned state marker (§8),
+// and a faint state-tinted corner glow (teal = shipped, amber = planned) is the
+// only accent — kept inside the illustration, never on chrome.
 const FEATURES = [
   {
     title: "Zero-dependency local inference",
@@ -37,22 +40,39 @@ const FEATURES = [
 
 export function FeatureGrid() {
   return (
-    <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-card border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
-      {FEATURES.map((f, i) => (
-        <Reveal key={f.title} delay={(i % 3) * 80} className="bg-surface">
-          <div className="flex h-full flex-col p-6">
-            <div className="flex items-start justify-between gap-3">
-              <h3 className="text-[1.05rem] font-semibold leading-snug text-text">
-                {f.title}
-              </h3>
-              <StateTag state={f.state} />
+    <div className="mt-12 grid grid-cols-1 gap-4 lg:grid-cols-3">
+      {FEATURES.map((f, i) => {
+        const wide = i % 2 === 0;
+        const shipped = f.state !== "planned";
+        return (
+          <Reveal
+            key={f.title}
+            delay={(i % 3) * 80}
+            className={wide ? "lg:col-span-2" : "lg:col-span-1"}
+          >
+            <div className="glass glass-interactive relative flex h-full flex-col overflow-hidden rounded-card p-6">
+              <span
+                aria-hidden
+                className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full opacity-40 blur-3xl"
+                style={{
+                  background: shipped
+                    ? "radial-gradient(circle, var(--accent-stream), transparent 70%)"
+                    : "radial-gradient(circle, var(--accent-compute), transparent 70%)",
+                }}
+              />
+              <div className="relative flex items-start justify-between gap-3">
+                <h3 className="font-display text-[1.15rem] font-medium leading-snug text-text">
+                  {f.title}
+                </h3>
+                <StateTag state={f.state} />
+              </div>
+              <p className="relative mt-3 max-w-md text-[0.9rem] leading-relaxed text-text-muted">
+                {f.body}
+              </p>
             </div>
-            <p className="mt-3 text-[0.9rem] leading-relaxed text-text-muted">
-              {f.body}
-            </p>
-          </div>
-        </Reveal>
-      ))}
+          </Reveal>
+        );
+      })}
     </div>
   );
 }

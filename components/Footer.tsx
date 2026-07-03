@@ -1,6 +1,6 @@
-import { Wordmark } from "./Wordmark";
+import { Logo } from "./Logo";
 
-const REPO = "https://github.com/cloudairy/flip";
+const REPO = "https://github.com/vedantnimbarte/Flip";
 
 const COLS = [
   {
@@ -28,8 +28,10 @@ export function Footer() {
     <footer className="rule">
       <div className="shell grid grid-cols-2 gap-8 py-14 sm:grid-cols-4">
         <div className="col-span-2 sm:col-span-2">
-          <Wordmark />
-          <p className="mt-3 max-w-xs text-[0.85rem] leading-relaxed text-text-muted">
+          <a href="/" className="inline-flex rounded-full p-0.5" aria-label="flip — home">
+            <Logo size={34} />
+          </a>
+          <p className="mt-4 max-w-xs text-[0.85rem] leading-relaxed text-text-muted">
             Dynamic layer-streaming inference. Run massive models on the hardware
             you already have.
           </p>

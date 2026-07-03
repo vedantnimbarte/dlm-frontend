@@ -21,10 +21,10 @@ const STATS = [
 
 export function ProofStats() {
   return (
-    <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-card border border-border bg-border sm:grid-cols-3">
+    <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
       {STATS.map((s, i) => (
-        <Reveal key={s.label} delay={i * 90} className="bg-surface">
-          <div className="flex h-full flex-col justify-between p-6">
+        <Reveal key={s.label} delay={i * 90}>
+          <div className="glass glass-interactive flex h-full flex-col justify-between rounded-card p-6">
             <div className="font-mono text-[2.6rem] font-semibold leading-none tracking-tight text-text tnum">
               {s.value}
               <span className="ml-1.5 text-lg font-normal text-text-muted">

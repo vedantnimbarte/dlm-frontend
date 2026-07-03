@@ -23,7 +23,7 @@ export function Section({
         <Reveal>
           <div className="max-w-2xl">
             <span className="eyebrow">{eyebrow}</span>
-            <h2 className="mt-3 text-[clamp(1.7rem,3.4vw,2.75rem)] font-semibold leading-[1.08] tracking-[-0.02em] text-text">
+            <h2 className="mt-3 font-display text-[clamp(1.7rem,3.4vw,2.75rem)] font-semibold leading-[1.08] tracking-[-0.025em] text-text">
               {title}
             </h2>
             {intro ? (

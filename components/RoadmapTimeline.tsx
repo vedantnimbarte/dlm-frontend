@@ -39,7 +39,7 @@ export function RoadmapTimeline() {
     <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
       {PHASES.map((p, i) => (
         <Reveal key={p.phase} delay={i * 100}>
-          <div className="flex h-full flex-col rounded-card border border-border bg-surface p-6">
+          <div className="glass glass-interactive flex h-full flex-col rounded-card p-6">
             <div className="flex items-center justify-between">
               <span className="font-mono text-[0.72rem] uppercase tracking-eyebrow text-text-muted">
                 {p.phase}

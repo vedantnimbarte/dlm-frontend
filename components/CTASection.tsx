@@ -1,23 +1,15 @@
 import { Reveal } from "./Reveal";
 
-const REPO = "https://github.com/cloudairy/flip";
+const REPO = "https://github.com/vedantnimbarte/Flip";
 
 export function CTASection() {
   return (
     <section className="rule">
       <div className="shell py-20 sm:py-24">
         <Reveal>
-          <div className="relative overflow-hidden rounded-card border border-border bg-surface p-8 sm:p-12">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(40rem 20rem at 80% 120%, rgba(61,216,196,0.10), transparent 60%)",
-              }}
-            />
+          <div className="glass glass-interactive relative overflow-hidden rounded-card p-8 sm:p-12">
             <div className="relative max-w-2xl">
-              <h2 className="text-[clamp(1.8rem,4vw,3rem)] font-bold leading-[1.02] tracking-[-0.02em] text-text">
+              <h2 className="font-display text-[clamp(1.8rem,4vw,3rem)] font-semibold leading-[1.02] tracking-[-0.025em] text-text">
                 The GPU you already own is enough.
               </h2>
               <p className="mt-4 text-lg leading-relaxed text-text-muted">

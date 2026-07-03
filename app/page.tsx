@@ -41,7 +41,7 @@ export default function Home() {
           intro="Resident loading means the whole model sits in VRAM at once. That math has kept the best open models off consumer hardware — until you stop assuming every layer must be present at the same time."
         >
           <Reveal delay={80}>
-            <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-card border border-border bg-border sm:grid-cols-3">
+            <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
               <ContrastCell
                 k="Resident load, 70B"
                 v="~40 GB"
@@ -157,7 +157,7 @@ function ContrastCell({
   stream?: boolean;
 }) {
   return (
-    <div className="bg-surface p-6">
+    <div className="glass glass-interactive rounded-card p-6">
       <div className="eyebrow">{k}</div>
       <div
         className={`mt-3 font-mono text-[2.2rem] font-semibold leading-none tnum ${

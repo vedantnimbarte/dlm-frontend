@@ -25,7 +25,7 @@ export function VramVisualizer() {
 
   return (
     <div
-      className="rounded-card border border-border bg-surface/80 p-4 backdrop-blur-sm sm:p-5"
+      className="glass glass-interactive rounded-card p-4 sm:p-5"
       role="group"
       aria-label="VRAM budget visualizer"
     >

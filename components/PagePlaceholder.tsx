@@ -1,7 +1,7 @@
 import { Nav } from "./Nav";
 import { Footer } from "./Footer";
 
-const REPO = "https://github.com/cloudairy/flip";
+const REPO = "https://github.com/vedantnimbarte/Flip";
 
 export function PagePlaceholder({
   eyebrow,
@@ -20,14 +20,14 @@ export function PagePlaceholder({
       <main id="main">
         <section className="shell py-20 sm:py-28">
           <span className="eyebrow">{eyebrow}</span>
-          <h1 className="mt-4 max-w-3xl text-[clamp(2rem,4.5vw,3.25rem)] font-bold leading-[1.02] tracking-[-0.02em] text-text">
+          <h1 className="mt-4 max-w-3xl font-display text-[clamp(2rem,4.5vw,3.25rem)] font-semibold leading-[1.02] tracking-[-0.025em] text-text">
             {title}
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-text-muted">
             {intro}
           </p>
 
-          <div className="mt-12 max-w-xl rounded-card border border-border bg-surface p-6">
+          <div className="glass glass-interactive mt-12 max-w-xl rounded-card p-6">
             <div className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-accent-compute" aria-hidden />
               <span className="font-mono text-[0.72rem] uppercase tracking-eyebrow text-text-muted">

@@ -32,7 +32,7 @@ export function ZoneDiagram() {
     <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,320px)_1fr] lg:gap-14">
       {/* The VRAM column — three zones sized by their real footprint */}
       <Reveal className="lg:sticky lg:top-24 lg:self-start">
-        <div className="rounded-card border border-border bg-surface p-4">
+        <div className="glass glass-interactive rounded-card p-4">
           <div className="mb-3 flex items-baseline justify-between">
             <span className="eyebrow">VRAM · 16 GB</span>
             <span className="font-mono text-[0.7rem] text-text-muted">70B</span>

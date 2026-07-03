@@ -40,8 +40,8 @@ export function TerminalBlock({
             : "text-text-muted";
 
   return (
-    <figure className="overflow-hidden rounded-card border border-border bg-surface-2">
-      <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+    <figure className="glass glass-interactive overflow-hidden rounded-card">
+      <div className="flex items-center justify-between border-b border-glass-border px-4 py-2.5">
         <div className="flex items-center gap-1.5" aria-hidden>
           <span className="h-2.5 w-2.5 rounded-full bg-danger/60" />
           <span className="h-2.5 w-2.5 rounded-full bg-accent-compute/60" />
@@ -53,7 +53,7 @@ export function TerminalBlock({
         <button
           type="button"
           onClick={copy}
-          className="rounded-[4px] border border-border bg-surface px-2 py-1 font-mono text-[0.68rem] text-text-muted transition-colors hover:border-text-muted/50 hover:text-text"
+          className="rounded-[4px] border border-glass-border bg-white/5 px-2 py-1 font-mono text-[0.68rem] text-text-muted transition-colors hover:border-text-muted/50 hover:text-text"
         >
           {copied ? "copied ✓" : "copy"}
         </button>
