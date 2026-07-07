@@ -22,8 +22,16 @@ export function ModelsBrowser() {
   const [query, setQuery] = useState("");
   const [models, setModels] = useState<Model[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("loading");
-  // Provider chips, derived from the top models the hub returns (not static).
+  // Providers (hub authors): chips show the top few, the dropdown shows all.
   const [providers, setProviders] = useState<string[]>([]);
+
+  // Fetch the broad provider list once, from the dedicated endpoint.
+  useEffect(() => {
+    fetch("/api/hf-providers")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => setProviders(Array.isArray(d.providers) ? d.providers : []))
+      .catch(() => {});
+  }, []);
 
   // Debounced search, with stale-response cancellation.
   useEffect(() => {
@@ -35,15 +43,8 @@ export function ModelsBrowser() {
       })
         .then((r) => (r.ok ? r.json() : Promise.reject()))
         .then((d) => {
-          const list: Model[] = Array.isArray(d.models) ? d.models : [];
-          setModels(list);
+          setModels(Array.isArray(d.models) ? d.models : []);
           setStatus("idle");
-          // Seed providers once, from the top authors the hub returns.
-          setProviders((prev) =>
-            prev.length
-              ? prev
-              : [...new Set(list.map((m) => m.id.split("/")[0]))].slice(0, 15)
-          );
         })
         .catch((e) => {
           if (e?.name !== "AbortError") setStatus("error");
