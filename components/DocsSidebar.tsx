@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { DOCS_NAV } from "./docsNav";
+import { DocsSearch } from "./DocsSearch";
 
 export function DocsSidebar() {
   const pathname = usePathname();
@@ -46,6 +47,9 @@ export function DocsSidebar() {
 
   return (
     <aside className="lg:w-[220px] lg:shrink-0">
+      <div className="mb-4">
+        <DocsSearch />
+      </div>
       {/* Mobile: native disclosure, no extra JS */}
       <details className="glass rounded-card p-2 lg:hidden">
         <summary className="cursor-pointer list-none px-2 py-1.5 font-mono text-[0.8rem] text-text">
