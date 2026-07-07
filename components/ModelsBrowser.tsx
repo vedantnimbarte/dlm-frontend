@@ -11,8 +11,6 @@ interface Model {
   safetensors: boolean;
 }
 
-const CHIPS = ["llama", "qwen", "mistral", "gemma", "phi"];
-
 function compact(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
   if (n >= 1_000) return `${(n / 1_000).toFixed(1)}k`;
@@ -23,6 +21,8 @@ export function ModelsBrowser() {
   const [query, setQuery] = useState("");
   const [models, setModels] = useState<Model[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("loading");
+  // Provider chips, derived from the top models the hub returns (not static).
+  const [providers, setProviders] = useState<string[]>([]);
 
   // Debounced search, with stale-response cancellation.
   useEffect(() => {
@@ -34,8 +34,15 @@ export function ModelsBrowser() {
       })
         .then((r) => (r.ok ? r.json() : Promise.reject()))
         .then((d) => {
-          setModels(Array.isArray(d.models) ? d.models : []);
+          const list: Model[] = Array.isArray(d.models) ? d.models : [];
+          setModels(list);
           setStatus("idle");
+          // Seed the chips once, from the top providers the hub returns.
+          setProviders((prev) =>
+            prev.length
+              ? prev
+              : [...new Set(list.map((m) => m.id.split("/")[0]))].slice(0, 6)
+          );
         })
         .catch((e) => {
           if (e?.name !== "AbortError") setStatus("error");
@@ -79,19 +86,21 @@ export function ModelsBrowser() {
         ) : null}
       </div>
 
-      {/* Quick chips */}
-      <div className="mt-3 flex flex-wrap gap-2">
-        {CHIPS.map((c) => (
-          <button
-            key={c}
-            type="button"
-            onClick={() => setQuery(c)}
-            className="rounded-full border border-glass-border bg-white/[0.03] px-3 py-1 font-mono text-[0.72rem] text-text-muted transition-colors hover:border-text-muted/50 hover:text-text"
-          >
-            {c}
-          </button>
-        ))}
-      </div>
+      {/* Provider chips — top authors from the hub */}
+      {providers.length ? (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {providers.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setQuery(c)}
+              className="rounded-full border border-glass-border bg-white/[0.03] px-3 py-1 font-mono text-[0.72rem] text-text-muted transition-colors hover:border-text-muted/50 hover:text-text"
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       {/* Results */}
       <div className="mt-8" aria-live="polite">
