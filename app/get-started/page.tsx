@@ -5,6 +5,7 @@ import { Section } from "@/components/Section";
 import { Reveal } from "@/components/Reveal";
 import { CopyCommand } from "@/components/CopyCommand";
 import { TerminalBlock } from "@/components/TerminalBlock";
+import { TerminalDemo } from "@/components/TerminalDemo";
 import { Tabs } from "@/components/Tabs";
 import { CTASection } from "@/components/CTASection";
 
@@ -38,7 +39,7 @@ const STEPS = [
     title: "Serve it",
     body: "Start the OpenAI-compatible HTTP server. Existing clients — Open WebUI, the OpenAI SDKs — point at dlm with a URL change and talk to it unchanged.",
     command: `dlm serve --model-path ./models/Qwen2.5-0.5B-Instruct --port 8000`,
-    note: "Exposes POST /v1/chat/completions, /v1/completions, and GET /v1/models. Add \"stream\": true for token-by-token SSE. Concurrent requests are continuously batched.",
+    note: "Exposes the OpenAI POST /v1/chat/completions and Anthropic POST /v1/messages endpoints, plus GET /v1/models. Add \"stream\": true for token-by-token SSE. Concurrent requests are continuously batched.",
   },
 ];
 
@@ -67,6 +68,10 @@ export default function GetStarted() {
               <span className="text-text">cargo install --git {REPO}</span> to
               build from source.
             </p>
+          </Reveal>
+
+          <Reveal delay={140} className="mt-6 max-w-2xl">
+            <TerminalDemo />
           </Reveal>
         </section>
 
