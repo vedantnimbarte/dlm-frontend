@@ -40,7 +40,6 @@ export default function Api() {
         head={["Method", "Path", "Purpose"]}
         rows={[
           [<Code key="m">POST</Code>, <Code key="p">/v1/chat/completions</Code>, "OpenAI chat completion (with optional SSE streaming)."],
-          [<Code key="m">POST</Code>, <Code key="p">/v1/completions</Code>, "OpenAI text completion."],
           [<Code key="m">POST</Code>, <Code key="p">/v1/messages</Code>, "Anthropic Messages API (with SSE streaming)."],
           [<Code key="m">GET</Code>, <Code key="p">/v1/models</Code>, "List the served model."],
         ]}
@@ -57,9 +56,29 @@ export default function Api() {
       <TerminalBlock
         command="response"
         lines={[
-          { text: '  {"choices":[{"message":{"role":"assistant",', tone: "muted" },
-          { text: '     "content":"Hello! How can I help?"}}],', tone: "text" },
-          { text: '   "usage":{"completion_tokens":7}}', tone: "muted" },
+          { text: '  {"id":"chatcmpl-…","object":"chat.completion","model":"dlm",', tone: "muted" },
+          { text: '   "choices":[{"index":0,"message":{"role":"assistant",', tone: "muted" },
+          { text: '     "content":"Hello! How can I help?"},', tone: "text" },
+          { text: '     "finish_reason":"stop"}],', tone: "muted" },
+          { text: '   "usage":{"prompt_tokens":9,"completion_tokens":7,', tone: "muted" },
+          { text: '     "total_tokens":16}}', tone: "muted" },
+        ]}
+      />
+      <DocH3 id="chat-fields">Request fields</DocH3>
+      <DocTable
+        head={["Field", "Notes"]}
+        rows={[
+          [<Code key="f">model</Code>, "Any string — dlm serves one model; the id is echoed back."],
+          [<Code key="f">messages</Code>, "Required. Array of { role, content } turns, rendered with the server's chat template."],
+          [<Code key="f">max_tokens</Code>, "Cap on generated tokens (defaults to the server max)."],
+          [<Code key="f">stream</Code>, "true → SSE chunks; false (default) → one JSON response."],
+          [
+            <Code key="f">temperature</Code>,
+            <>
+              Plus <Code>top_p</Code>, <Code>top_k</Code>, <Code>seed</Code>,{" "}
+              <Code>stop</Code> — see Sampling parameters below.
+            </>,
+          ],
         ]}
       />
 
@@ -132,7 +151,9 @@ export default function Api() {
       </DocNote>
 
       <DocH2 id="sampling">Sampling parameters</DocH2>
-      <DocP>Per-request sampling is honored on both completion endpoints:</DocP>
+      <DocP>
+        Per-request sampling is honored on both the chat and messages endpoints:
+      </DocP>
       <DocTable
         head={["Parameter", "Effect"]}
         rows={[
@@ -144,6 +165,29 @@ export default function Api() {
           [<Code key="p">max_tokens</Code>, "Cap the number of generated tokens."],
         ]}
       />
+
+      <DocH2 id="models">List models</DocH2>
+      <DocP>
+        <Code>GET /v1/models</Code> returns the single served model in the OpenAI
+        list shape.
+      </DocP>
+      <div className="mt-5 mb-4">
+        <CopyCommand command="curl http://127.0.0.1:8000/v1/models" />
+      </div>
+      <TerminalBlock
+        command="response"
+        lines={[
+          { text: '  {"object":"list","data":[{"id":"dlm",', tone: "muted" },
+          { text: '     "object":"model","owned_by":"dlm"}]}', tone: "text" },
+        ]}
+      />
+
+      <DocH2 id="errors">Errors</DocH2>
+      <DocP>
+        Failures return a JSON error body with the appropriate status code. See
+        the <DocA href="/docs/errors">Errors &amp; status codes</DocA> reference
+        for the full list.
+      </DocP>
 
       <DocH2 id="auth">Authentication</DocH2>
       <DocP>

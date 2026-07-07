@@ -9,7 +9,10 @@ const routes = [
   "/about",
   "/docs",
   "/docs/install",
+  "/docs/recommended-models",
   "/docs/clients",
+  "/docs/editors",
+  "/docs/tutorials",
   "/docs/distributed",
   "/docs/performance",
   "/docs/deployment",
@@ -17,12 +20,17 @@ const routes = [
   "/docs/cli",
   "/docs/config",
   "/docs/api",
+  "/docs/errors",
   "/docs/models",
+  "/docs/quantization",
   "/docs/build",
   "/docs/library",
   "/docs/glossary",
   "/docs/concepts",
   "/docs/contributing",
+  "/docs/changelog",
+  "/blog",
+  "/blog/layer-streaming",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

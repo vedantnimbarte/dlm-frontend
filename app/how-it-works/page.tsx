@@ -52,7 +52,7 @@ const STACK = [
   {
     title: "OpenAI-compatible server",
     state: "shipped",
-    body: "A dependency-free HTTP server exposing /v1/chat/completions (with SSE streaming), /v1/completions, and /v1/models. Real tokenizers, chat templates, per-request sampling, and bearer-token auth. Started by dlm serve.",
+    body: "A dependency-free HTTP server exposing the OpenAI /v1/chat/completions and Anthropic /v1/messages endpoints (both with SSE streaming), plus /v1/models. Real tokenizers, chat templates, per-request sampling, bearer + x-api-key auth. Started by dlm serve.",
   },
   {
     title: "Continuous batching",
