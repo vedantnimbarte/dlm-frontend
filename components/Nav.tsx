@@ -7,6 +7,7 @@ import { Logo } from "./Logo";
 const LINKS = [
   { href: "/how-it-works", label: "How it works" },
   { href: "/benchmarks", label: "Benchmarks" },
+  { href: "/models", label: "Models" },
   { href: "/docs", label: "Docs" },
   { href: "/get-started", label: "Get started" },
 ];

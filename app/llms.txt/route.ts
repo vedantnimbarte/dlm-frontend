@@ -19,6 +19,7 @@ export function GET() {
     `- [Home](${SITE}/)`,
     `- [How it works](${SITE}/how-it-works)`,
     `- [Benchmarks](${SITE}/benchmarks)`,
+    `- [Models](${SITE}/models)`,
     `- [Get started](${SITE}/get-started)`,
     `- [About](${SITE}/about)`,
     "",
