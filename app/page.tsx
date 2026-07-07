@@ -8,6 +8,7 @@ import { FeatureGrid } from "@/components/FeatureGrid";
 import { ProofStats } from "@/components/ProofStats";
 import { TerminalBlock } from "@/components/TerminalBlock";
 import { RoadmapTimeline } from "@/components/RoadmapTimeline";
+import { Comparison } from "@/components/Comparison";
 import { CTASection } from "@/components/CTASection";
 import { Footer } from "@/components/Footer";
 
@@ -135,7 +136,16 @@ export default function Home() {
           <RoadmapTimeline />
         </Section>
 
-        {/* 9 · Final CTA */}
+        {/* 9 · Where it fits */}
+        <Section
+          eyebrow="Where it fits"
+          title="A different bet than resident loading."
+          intro="Most engines assume the model lives in VRAM in full. dlm streams it, which changes what runs on the hardware you own."
+        >
+          <Comparison />
+        </Section>
+
+        {/* 10 · Final CTA */}
         <CTASection />
       </main>
       <Footer />
