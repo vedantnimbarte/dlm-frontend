@@ -61,8 +61,8 @@ export default function Config() {
             "Auto-tune the prefetch depth at runtime from measured load-vs-compute time, instead of a fixed depth.",
           ],
           [
-            <Code key="f">--quantize-kv</Code>,
-            "Store the KV cache int8-quantized — about half the KV memory (which can exceed the weights at long context), at a small approximation.",
+            <Code key="f">--kv-quant none | int8 | int4</Code>,
+            "Quantize the KV cache (which can exceed the weights at long context). int8 ≈ half the KV memory, int4 ≈ a quarter with more error; none (default) keeps exact f32.",
           ],
           [
             <Code key="f">--device gpu | cpu</Code>,

@@ -143,7 +143,7 @@ export default function Cli() {
           ],
           [<Code key="f">--prefetch-depth N</Code>, "Prefetch N layers ahead while streaming (default 1; 0 disables). Clamped to window − 1."],
           [<Code key="f">--auto-prefetch</Code>, "Auto-tune the prefetch depth from measured load-vs-compute time."],
-          [<Code key="f">--quantize-kv</Code>, "Store the KV cache int8 — ~half the KV memory, small approximation."],
+          [<Code key="f">--kv-quant int8 | int4</Code>, "Quantize the KV cache — int8 ≈ half the memory, int4 ≈ a quarter (default none)."],
           [<Code key="f">--device gpu</Code>, "Run the batched engine on the CUDA kernel (cuda-kernels build)."],
           [<Code key="f">--api-key</Code>, "Require a bearer token on /v1/*."],
           [<Code key="f">--chat-template</Code>, "plain | chatml | llama3."],

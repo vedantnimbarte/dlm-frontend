@@ -83,10 +83,16 @@ export default function Changelog() {
           load-vs-compute time.
         </DocLi>
         <DocLi>
-          <strong className="text-text">int8 KV cache</strong> —{" "}
-          <Code>--quantize-kv</Code> stores the KV cache int8-quantized, roughly
-          halving KV memory (which can exceed the weights at long context) for a
-          small approximation.
+          <strong className="text-text">KV-cache quantization</strong> —{" "}
+          <Code>--kv-quant int8 | int4</Code> shrinks the KV cache (which can
+          exceed the weights at long context) to roughly half or a quarter of its
+          memory, freeing budget for more resident layers.
+        </DocLi>
+        <DocLi>
+          <strong className="text-text">GPU weight prefetch</strong> — the GPU
+          streaming path now uploads the next layer&rsquo;s weights to VRAM on a
+          non-blocking copy stream, overlapping the PCIe transfer with compute.
+          Validated on-device.
         </DocLi>
       </DocUl>
 
