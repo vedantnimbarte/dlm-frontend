@@ -15,7 +15,7 @@ const ZONES = [
     accent: "var(--accent-stream)",
     swatch: "bg-accent-stream",
     span: "double-buffered A · B",
-    body: "A working window of layers lives here. Buffer A computes the current block while buffer B streams the next one in — then they flip. That flip is the whole trick.",
+    body: "A working window of layers lives here. Buffer A computes the current block while buffer B streams the next one in — then they swap. That swap is the whole trick.",
   },
   {
     key: "cache",
@@ -23,7 +23,7 @@ const ZONES = [
     accent: "var(--text-muted)",
     swatch: "bg-text-muted",
     span: "spills to CPU RAM · NVMe",
-    body: "Layers not in VRAM wait in a tiered CPU-RAM cache backed by mmap'd weights on NVMe. They flip in on demand, just ahead of when they're needed.",
+    body: "Layers not in VRAM wait in a tiered CPU-RAM cache backed by mmap'd weights on NVMe. They stream in on demand, just ahead of when they're needed.",
   },
 ];
 

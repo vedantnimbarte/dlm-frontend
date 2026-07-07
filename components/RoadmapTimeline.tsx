@@ -15,7 +15,7 @@ const PHASES = [
   {
     phase: "Phase 2",
     title: "On the GPU",
-    status: "in-progress",
+    status: "shipped",
     items: [
       "CUDA / ROCm compute kernels",
       "PagedAttention KV cache",
@@ -25,7 +25,7 @@ const PHASES = [
   {
     phase: "Phase 3",
     title: "Serve & scale",
-    status: "planned",
+    status: "shipped",
     items: [
       "OpenAI-compatible server loop",
       "Multi-GPU / multi-node partitioning",

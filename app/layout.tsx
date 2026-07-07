@@ -23,15 +23,15 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const siteUrl = "https://flip.dev";
+const siteUrl = "https://dlm.dev";
 const description =
-  "flip streams transformer layers in and out of your GPU as it computes — so a 70B model runs on 16 GB of VRAM. Open-source Rust inference engine.";
+  "dlm streams transformer layers in and out of your GPU as it computes — so a 70B model runs on 16 GB of VRAM. Open-source Rust inference engine.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "flip — Run a 70B model on 16 GB of VRAM",
-    template: "%s · flip",
+    default: "dlm — Run a 70B model on 16 GB of VRAM",
+    template: "%s · dlm",
   },
   description,
   keywords: [
@@ -43,15 +43,15 @@ export const metadata: Metadata = {
     "VRAM",
   ],
   openGraph: {
-    title: "flip — Run a 70B model on 16 GB of VRAM",
+    title: "dlm — Run a 70B model on 16 GB of VRAM",
     description,
     url: siteUrl,
-    siteName: "flip",
+    siteName: "dlm",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "flip — Run a 70B model on 16 GB of VRAM",
+    title: "dlm — Run a 70B model on 16 GB of VRAM",
     description,
   },
   robots: { index: true, follow: true },

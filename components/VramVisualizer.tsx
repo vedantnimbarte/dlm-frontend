@@ -129,13 +129,13 @@ export function VramVisualizer() {
         </div>
       </div>
 
-      {/* Streaming zone — A/B double buffer flip */}
+      {/* Streaming zone — A/B double buffer swap */}
       {r.fits ? (
         <div className="mt-4 rounded-[6px] border border-border bg-bg/60 p-3">
           <div className="mb-2 flex items-baseline justify-between">
             <span className="eyebrow">Streaming zone · double buffer</span>
             <span className="font-mono text-[0.7rem] text-text-muted tnum">
-              {r.streamedLayers} layers flip through
+              {r.streamedLayers} layers stream through
             </span>
           </div>
           <div className="space-y-2" aria-hidden>
@@ -145,7 +145,7 @@ export function VramVisualizer() {
           <p className="mt-2.5 text-[0.7rem] leading-relaxed text-text-muted">
             <span className="text-accent-compute">Amber</span> executes on the GPU
             while <span className="text-accent-stream">teal</span> streams the next
-            window in over PCIe — then they flip. DMA hides under compute.
+            window in over PCIe — then they swap. DMA hides under compute.
           </p>
         </div>
       ) : (

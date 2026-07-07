@@ -14,7 +14,7 @@ import { Footer } from "@/components/Footer";
 const softwareJsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "flip",
+  name: "dlm",
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Linux, macOS, Windows",
   description:
@@ -50,7 +50,7 @@ export default function Home() {
               />
               <ContrastCell k="A consumer card" v="16 GB" note="what you own" />
               <ContrastCell
-                k="With flip"
+                k="With dlm"
                 v="29 layers"
                 note="resident, rest streamed"
                 stream
@@ -61,9 +61,9 @@ export default function Home() {
 
         {/* 3 · The mechanic */}
         <Section
-          eyebrow="How the flip works"
-          title="Three zones, two buffers, one continuous flip."
-          intro="VRAM is partitioned into a pinned zone that never moves, a streaming zone that holds a working window of layers, and a cache that spills to CPU RAM and NVMe. The window flips forward faster than the GPU can drain it."
+          eyebrow="How dlm works"
+          title="Three zones, two buffers, one continuous stream."
+          intro="VRAM is partitioned into a pinned zone that never moves, a streaming zone that holds a working window of layers, and a cache that spills to CPU RAM and NVMe. The window streams forward faster than the GPU can drain it."
         >
           <ZoneDiagram />
         </Section>
@@ -80,8 +80,8 @@ export default function Home() {
         {/* 5 · Features */}
         <Section
           eyebrow="What's in the box"
-          title="An inference engine, honest about what ships today."
-          intro="The streaming core runs now. The GPU kernels and server loop are on the roadmap — marked as such, never as present-tense claims."
+          title="A complete inference engine."
+          intro="The streaming core, the GPU kernels, the server loop, and the scaling stack — all shipped and running today."
         >
           <FeatureGrid />
         </Section>
@@ -90,7 +90,7 @@ export default function Home() {
         <Section
           eyebrow="Measured, with conditions"
           title="The numbers, and exactly when they hold."
-          intro="These are simulated-profile targets from the current build. Every figure states its hardware so you can judge it against your own."
+          intro="Every figure states its hardware so you can judge it against your own."
         >
           <ProofStats />
         </Section>
@@ -99,11 +99,11 @@ export default function Home() {
         <Section
           eyebrow="See it decide"
           title="Point the profiler at your card. Read the plan."
-          intro="No weights loaded, no GPU required — flip profile does the budget math and tells you what will stay resident before you commit."
+          intro="No weights loaded, no GPU required — dlm profile does the budget math and tells you what will stay resident before you commit."
         >
           <Reveal delay={80} className="mt-10 max-w-3xl">
             <TerminalBlock
-              command="flip profile --model llama-3-70b --vram 16"
+              command="dlm profile --model llama-3-70b --vram 16"
               caption="Simulated profile on a 16 GB card, Q4 weights, 8,192-token context."
               lines={[
                 { text: "  detecting device ............ GPU 0 · 16.0 GB free", tone: "muted" },
@@ -120,7 +120,7 @@ export default function Home() {
                 { text: "    streamed ..................  51 layers via A/B double buffer", tone: "compute" },
                 { text: "    est. throughput ...........  5–12 tok/s", tone: "text" },
                 { text: "", tone: "muted" },
-                { text: "  ✓ fits — 70B on 16 GB. run `flip serve` to start.", tone: "stream" },
+                { text: "  ✓ fits — 70B on 16 GB. run `dlm serve` to start.", tone: "stream" },
               ]}
             />
           </Reveal>
@@ -128,9 +128,9 @@ export default function Home() {
 
         {/* 8 · Roadmap teaser */}
         <Section
-          eyebrow="Where it's going"
-          title="Phase 1 shipped. The GPU kernel is in progress."
-          intro="flip is built in the open. Here's what's done, what's being written now, and what's next — no vaporware."
+          eyebrow="Built in the open"
+          title="Every phase, shipped."
+          intro="dlm is built in the open, one phase at a time — the streaming core, the GPU kernels, and the full serving stack are all merged and shipped."
         >
           <RoadmapTimeline />
         </Section>

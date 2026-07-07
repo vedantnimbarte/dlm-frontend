@@ -47,7 +47,7 @@ export function TerminalBlock({
           <span className="h-2.5 w-2.5 rounded-full bg-accent-compute/60" />
           <span className="h-2.5 w-2.5 rounded-full bg-accent-stream/60" />
           <span className="ml-2 font-mono text-[0.7rem] text-text-muted">
-            flip — profiler
+            dlm — profiler
           </span>
         </div>
         <button

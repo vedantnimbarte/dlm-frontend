@@ -1,19 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
 
 const LINKS = [
   { href: "/how-it-works", label: "How it works" },
   { href: "/benchmarks", label: "Benchmarks" },
+  { href: "/docs", label: "Docs" },
   { href: "/get-started", label: "Get started" },
 ];
 
-const REPO = "https://github.com/vedantnimbarte/Flip";
+const REPO = "https://github.com/vedantnimbarte/dlm";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Off the homepage, surface an explicit Home link (the logo only appears once
+  // scrolled, so subpages need a way back at the top).
+  const links =
+    pathname === "/" ? LINKS : [{ href: "/", label: "Home" }, ...LINKS];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -37,7 +45,7 @@ export function Nav() {
           href="/"
           className="nav-logo items-center rounded-full p-0.5"
           data-show={scrolled}
-          aria-label="flip — home"
+          aria-label="dlm — home"
         >
           <Logo size={32} priority />
         </a>
@@ -55,7 +63,7 @@ export function Nav() {
           </span>
           <span className="nav-spacer" style={{ flexGrow: 1 }} aria-hidden />
           <div className="flex items-center gap-8">
-            {LINKS.map((l) => (
+            {links.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
@@ -91,7 +99,7 @@ export function Nav() {
           className="glass border-x-0 border-b-0 md:hidden"
         >
           <div className="shell flex flex-col gap-1 py-3">
-            {LINKS.map((l) => (
+            {links.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
