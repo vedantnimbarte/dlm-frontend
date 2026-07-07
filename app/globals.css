@@ -52,6 +52,9 @@
   }
 
   html {
+    /* Global scale-down: everything sized in rem (type, spacing, gaps, button
+       heights) shrinks proportionally from one lever. 93.75% ≈ 15px base. */
+    font-size: 93.75%;
     scroll-behavior: smooth;
   }
 

@@ -12,7 +12,7 @@ export function Hero() {
         <span className="eyebrow mt-9 animate-fade-up">
           Dynamic layer-streaming inference
         </span>
-        <h1 className="mt-5 max-w-4xl font-display text-[clamp(2.5rem,6.2vw,4.75rem)] font-semibold leading-[0.98] tracking-[-0.03em] text-text animate-fade-up [animation-delay:60ms]">
+        <h1 className="mt-5 max-w-4xl font-display text-[clamp(2.2rem,5.4vw,4.1rem)] font-semibold leading-[0.98] tracking-[-0.03em] text-text animate-fade-up [animation-delay:60ms]">
           Run a 70B model on 16&nbsp;GB of VRAM.
         </h1>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-text-muted animate-fade-up [animation-delay:120ms]">

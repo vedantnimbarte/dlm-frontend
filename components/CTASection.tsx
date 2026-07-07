@@ -9,7 +9,7 @@ export function CTASection() {
         <Reveal>
           <div className="glass glass-interactive relative overflow-hidden rounded-card p-8 sm:p-12">
             <div className="relative max-w-2xl">
-              <h2 className="font-display text-[clamp(1.8rem,4vw,3rem)] font-semibold leading-[1.02] tracking-[-0.025em] text-text">
+              <h2 className="font-display text-[clamp(1.6rem,3.4vw,2.6rem)] font-semibold leading-[1.02] tracking-[-0.025em] text-text">
                 The GPU you already own is enough.
               </h2>
               <p className="mt-4 text-lg leading-relaxed text-text-muted">
