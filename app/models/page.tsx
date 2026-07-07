@@ -29,7 +29,7 @@ export default function Models() {
             </p>
           </Reveal>
 
-          <Reveal delay={90} className="mt-10 max-w-2xl">
+          <Reveal delay={90} className="mt-10 max-w-5xl">
             <ModelsBrowser />
           </Reveal>
         </section>
