@@ -48,8 +48,9 @@ export default function Changelog() {
         <DocLi>
           <strong className="text-text">Metrics &amp; access log</strong> —{" "}
           <Code>GET /metrics</Code> exposes Prometheus counters
-          (<Code>dlm_requests_total</Code>, prompt/completion tokens); every
-          request is logged to stderr.
+          (<Code>dlm_requests_total</Code>, prompt/completion tokens, and — under{" "}
+          <Code>--stream</Code> — layer-cache hits/misses and live prefetch
+          depth); every request is logged to stderr.
         </DocLi>
         <DocLi>
           <strong className="text-text">More sampling controls</strong> —{" "}
@@ -69,6 +70,23 @@ export default function Changelog() {
           OpenAI-compatible server with continuous batching, speculative
           decoding, real tokenizers, chat templates, and request hardening
           (bearer/api-key auth, body-size cap).
+        </DocLi>
+      </DocUl>
+
+      <DocH2 id="streaming">Streaming & memory</DocH2>
+      <DocUl>
+        <DocLi>
+          <strong className="text-text">Layer prefetch</strong> — the streaming
+          engine loads the next layers while the current one computes, hiding
+          load latency under the math. <Code>--prefetch-depth N</Code> sets how
+          far ahead, and <Code>--auto-prefetch</Code> tunes it from measured
+          load-vs-compute time.
+        </DocLi>
+        <DocLi>
+          <strong className="text-text">int8 KV cache</strong> —{" "}
+          <Code>--quantize-kv</Code> stores the KV cache int8-quantized, roughly
+          halving KV memory (which can exceed the weights at long context) for a
+          small approximation.
         </DocLi>
       </DocUl>
 
