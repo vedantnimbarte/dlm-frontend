@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { CopyCommand } from "./CopyCommand";
+import { ProviderSelect } from "./ProviderSelect";
 
 interface Model {
   id: string;
@@ -104,19 +105,11 @@ export function ModelsBrowser() {
               {c}
             </button>
           ))}
-          <select
-            value={providers.includes(query) ? query : ""}
-            onChange={(e) => e.target.value && setQuery(e.target.value)}
-            aria-label="Select a provider"
-            className="rounded-full border border-glass-border bg-white/[0.03] px-3 py-1 font-mono text-[0.72rem] text-text-muted transition-colors hover:border-text-muted/50 hover:text-text focus:outline-none"
-          >
-            <option value="">More…</option>
-            {providers.map((p) => (
-              <option key={p} value={p} className="bg-surface text-text">
-                {p}
-              </option>
-            ))}
-          </select>
+          <ProviderSelect
+            topProviders={providers}
+            active={query}
+            onSelect={setQuery}
+          />
         </div>
       ) : null}
 
