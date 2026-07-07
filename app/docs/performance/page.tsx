@@ -65,8 +65,8 @@ export default function Performance() {
             "A longer context spends more of the VRAM budget on the KV cache, leaving fewer layers resident. Shorten it to keep more layers in VRAM.",
           ],
           [
-            <Code key="l">--quantize-kv</Code>,
-            "Store the KV cache int8 — roughly half the KV memory. At long context the KV cache can exceed the weights, so this frees budget for more resident layers, at a small approximation.",
+            <Code key="l">--kv-quant int8 | int4</Code>,
+            "Quantize the KV cache — int8 ≈ half its memory, int4 ≈ a quarter. At long context the KV cache can exceed the weights, so this frees budget for more resident layers; int4 trades more approximation for more room.",
           ],
           [
             "Quantization",
