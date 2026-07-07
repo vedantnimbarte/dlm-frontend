@@ -110,35 +110,30 @@ export function ModelsBrowser() {
             </p>
           </div>
         ) : (
-          <ul className="flex flex-col gap-3">
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {models.map((m) => (
               <li
                 key={m.id}
-                className="glass glass-interactive rounded-card p-5"
+                className="glass glass-interactive flex flex-col rounded-card p-5"
               >
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <a
-                      href={`https://huggingface.co/${m.id}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="font-mono text-[0.95rem] font-medium text-text transition-colors hover:text-accent-stream"
-                    >
-                      {m.id}
-                    </a>
-                    <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[0.72rem] text-text-muted">
-                      <span>↓ {compact(m.downloads)}</span>
-                      <span>♥ {compact(m.likes)}</span>
-                      {m.pipeline_tag ? <span>{m.pipeline_tag}</span> : null}
-                      {m.safetensors ? (
-                        <span className="rounded-[4px] border border-accent-stream/40 bg-accent-stream/10 px-1.5 py-0.5 uppercase tracking-eyebrow text-accent-stream">
-                          safetensors
-                        </span>
-                      ) : null}
-                    </div>
-                  </div>
+                <a
+                  href={`https://huggingface.co/${m.id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="break-all font-mono text-[0.9rem] font-medium text-text transition-colors hover:text-accent-stream"
+                >
+                  {m.id}
+                </a>
+                <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.7rem] text-text-muted">
+                  <span>↓ {compact(m.downloads)}</span>
+                  <span>♥ {compact(m.likes)}</span>
+                  {m.safetensors ? (
+                    <span className="rounded-[4px] border border-accent-stream/40 bg-accent-stream/10 px-1.5 py-0.5 uppercase tracking-eyebrow text-accent-stream">
+                      safetensors
+                    </span>
+                  ) : null}
                 </div>
-                <div className="mt-4">
+                <div className="mt-auto pt-4">
                   <CopyCommand command={`dlm pull ${m.id}`} />
                 </div>
               </li>
