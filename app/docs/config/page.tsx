@@ -93,7 +93,9 @@ export default function Config() {
         head={["Flag", "Purpose"]}
         rows={[
           [<Code key="f">--draft-model-path</Code>, "Enable speculative decoding with a draft model."],
+          [<Code key="f">--prefix-cache-size N</Code>, "Cache N prompt-prefix KV snapshots so shared prefixes skip re-prefill (0 = off)."],
           [<Code key="f">--multi-gpu-ids 0,1,2</Code>, "Pipeline-parallel across local GPUs."],
+          [<Code key="f">--distributed-mode master --worker-nodes host:port,…</Code>, "Coordinate layer shards across worker nodes and serve the OpenAI endpoint."],
           [<Code key="f">--distributed-mode worker</Code>, "Serve a layer shard to a master over TCP."],
         ]}
       />
@@ -102,7 +104,8 @@ export default function Config() {
       <DocP>
         Sampling is set <strong className="text-text">per request</strong> on the
         HTTP API (<Code>temperature</Code>, <Code>top_p</Code>, <Code>top_k</Code>,{" "}
-        <Code>seed</Code>, <Code>stop</Code>), not as serve flags. Temperature{" "}
+        <Code>min_p</Code>, <Code>repetition_penalty</Code>, <Code>seed</Code>,{" "}
+        <Code>stop</Code>), not as serve flags. Temperature{" "}
         <Code>0</Code> is deterministic greedy. See the{" "}
         <DocA href="/docs/api">HTTP API</DocA> reference.
       </DocP>

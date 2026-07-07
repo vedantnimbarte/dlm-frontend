@@ -82,13 +82,21 @@ export default function Distributed() {
         heartbeats track liveness and an unreachable worker falls back to local
         CPU-RAM execution, so a forward pass still completes.
       </DocP>
-      <DocP>Start each worker, then run the coordinator:</DocP>
+      <DocP>Start each worker, then point a master at them:</DocP>
       <div className="mt-5 space-y-2.5">
         <CopyCommand command="dlm serve --model-path /path/to/model --distributed-mode worker --host 0.0.0.0 --port 7001" />
+        <CopyCommand command="dlm serve --model-path /path/to/model --distributed-mode master --worker-nodes host-a:7001,host-b:7001" />
       </div>
+      <DocNote>
+        Master mode serves the OpenAI <Code>POST /v1/chat/completions</Code>{" "}
+        endpoint, coordinating the shards for you. This path is non-streaming and
+        greedy — one request at a time, since the coordinator owns a single KV
+        history. Use standalone or multi-GPU serving when you need batching or
+        streaming.
+      </DocNote>
       <DocP>
-        The coordinator side is driven through the library — partition the layers
-        and route the forward pass through the workers:
+        The coordinator can also be driven directly from the library — partition
+        the layers and route the forward pass through the workers yourself:
       </DocP>
       <TerminalBlock
         command="rust"

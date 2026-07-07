@@ -34,8 +34,33 @@ export default function Changelog() {
       <DocH2 id="api">API & serving</DocH2>
       <DocUl>
         <DocLi>
+          <strong className="text-text">Distributed serving</strong> —{" "}
+          <Code>dlm serve --distributed-mode master --worker-nodes …</Code> now
+          coordinates layer shards across worker nodes and serves the OpenAI
+          endpoint directly, with heartbeats and CPU-RAM fallback on a dead
+          worker.
+        </DocLi>
+        <DocLi>
+          <strong className="text-text">Cross-request prefix cache</strong> —{" "}
+          <Code>--prefix-cache-size N</Code> keeps prompt-prefix KV snapshots so
+          requests sharing a system prompt resume instead of re-prefilling it.
+        </DocLi>
+        <DocLi>
+          <strong className="text-text">Metrics &amp; access log</strong> —{" "}
+          <Code>GET /metrics</Code> exposes Prometheus counters
+          (<Code>dlm_requests_total</Code>, prompt/completion tokens); every
+          request is logged to stderr.
+        </DocLi>
+        <DocLi>
+          <strong className="text-text">More sampling controls</strong> —{" "}
+          <Code>min_p</Code> truncation and <Code>repetition_penalty</Code> joined
+          the per-request sampler; generation is cancelled when the client
+          disconnects.
+        </DocLi>
+        <DocLi>
           <strong className="text-text">Anthropic Messages API</strong> — the
-          server now serves <Code>POST /v1/messages</Code>, with SSE streaming
+          server serves <Code>POST /v1/messages</Code> and{" "}
+          <Code>/v1/messages/count_tokens</Code>, with SSE streaming
           (<Code>message_start</Code> → <Code>content_block_delta</Code> →{" "}
           <Code>message_stop</Code>) and <Code>x-api-key</Code> auth alongside
           bearer tokens.
