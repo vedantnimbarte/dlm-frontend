@@ -45,6 +45,10 @@ export default function Performance() {
             "A warm host-RAM cache skips the disk read; a faster PCIe generation drains the streaming window quicker. Both raise the tok/s floor.",
           ],
           [
+            <Code key="l">--prefetch-depth</Code>,
+            "Load the next N layers while the current one computes, hiding load latency under the math. --auto-prefetch tunes the depth to your disk. Watch dlm_stream_layer_misses_total on /metrics.",
+          ],
+          [
             <Code key="l">--draft-model-path</Code>,
             "Speculative decoding accepts several tokens per resident window — more tokens per streaming pass.",
           ],
@@ -59,6 +63,10 @@ export default function Performance() {
           [
             <Code key="l">--context-length</Code>,
             "A longer context spends more of the VRAM budget on the KV cache, leaving fewer layers resident. Shorten it to keep more layers in VRAM.",
+          ],
+          [
+            <Code key="l">--quantize-kv</Code>,
+            "Store the KV cache int8 — roughly half the KV memory. At long context the KV cache can exceed the weights, so this frees budget for more resident layers, at a small approximation.",
           ],
           [
             "Quantization",
