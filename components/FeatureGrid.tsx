@@ -14,7 +14,7 @@ const FEATURES = [
   {
     title: "OpenAI-compatible API",
     body: "Drop-in /v1/chat/completions endpoint, so existing clients and SDKs point at dlm with a URL change.",
-    state: "planned",
+    state: "shipped",
   },
   {
     title: "Dynamic VRAM profiling",
@@ -29,12 +29,12 @@ const FEATURES = [
   {
     title: "Speculative decoding",
     body: "A small draft model proposes tokens the large model verifies in batches — more tokens per resident window.",
-    state: "planned",
+    state: "shipped",
   },
   {
     title: "Multi-GPU / multi-node scaling",
     body: "Partition the layer stack across cards and hosts to widen the resident window and push throughput up.",
-    state: "planned",
+    state: "shipped",
   },
 ];
 

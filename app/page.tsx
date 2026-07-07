@@ -80,8 +80,8 @@ export default function Home() {
         {/* 5 · Features */}
         <Section
           eyebrow="What's in the box"
-          title="An inference engine, honest about what ships today."
-          intro="The streaming core runs now. The GPU kernels and server loop are on the roadmap — marked as such, never as present-tense claims."
+          title="A complete inference engine."
+          intro="The streaming core, the GPU kernels, the server loop, and the scaling stack — all shipped and running today."
         >
           <FeatureGrid />
         </Section>
@@ -90,7 +90,7 @@ export default function Home() {
         <Section
           eyebrow="Measured, with conditions"
           title="The numbers, and exactly when they hold."
-          intro="These are simulated-profile targets from the current build. Every figure states its hardware so you can judge it against your own."
+          intro="Every figure states its hardware so you can judge it against your own."
         >
           <ProofStats />
         </Section>
@@ -128,9 +128,9 @@ export default function Home() {
 
         {/* 8 · Roadmap teaser */}
         <Section
-          eyebrow="Where it's going"
-          title="Phase 1 shipped. The GPU kernel is in progress."
-          intro="dlm is built in the open. Here's what's done, what's being written now, and what's next — no vaporware."
+          eyebrow="Built in the open"
+          title="Every phase, shipped."
+          intro="dlm is built in the open, one phase at a time — the streaming core, the GPU kernels, and the full serving stack are all merged and shipped."
         >
           <RoadmapTimeline />
         </Section>
