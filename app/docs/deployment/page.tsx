@@ -33,9 +33,10 @@ export default function Deployment() {
 
       <DocH2 id="auth">Authentication</DocH2>
       <DocP>
-        Pass <Code>--api-key</Code> to require a bearer token on every{" "}
+        Pass <Code>--api-key</Code> to require a key on every{" "}
         <Code>/v1/*</Code> route. Requests without a matching{" "}
-        <Code>Authorization: Bearer …</Code> header are rejected.
+        <Code>Authorization: Bearer …</Code> (OpenAI) or <Code>x-api-key</Code>{" "}
+        (Anthropic) header are rejected.
       </DocP>
       <div className="mt-5 space-y-2.5">
         <CopyCommand command="dlm serve --model-path /path/to/model --api-key sk-secret" />

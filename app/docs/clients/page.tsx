@@ -27,9 +27,9 @@ export default function Clients() {
     <>
       <DocTitle>Client integration</DocTitle>
       <DocLead>
-        Because <Code>dlm serve</Code> speaks the OpenAI API, any client that
-        talks to OpenAI works unchanged — point its base URL at dlm and set the
-        model to <Code>dlm</Code>.
+        Because <Code>dlm serve</Code> speaks both the OpenAI API and the
+        Anthropic Messages API, clients for either work unchanged — point the base
+        URL at dlm and set the model to <Code>dlm</Code>.
       </DocLead>
 
       <DocH2 id="connection">Connection details</DocH2>
@@ -119,6 +119,53 @@ export default function Clients() {
         See the <DocA href="/docs/api">HTTP API</DocA> reference for the full set
         of endpoints, sampling parameters, and usage fields.
       </DocP>
+
+      <DocH2 id="anthropic">Anthropic SDK</DocH2>
+      <DocP>
+        dlm also serves the Anthropic Messages API at{" "}
+        <Code>/v1/messages</Code>, so the <Code>anthropic</Code> SDK works too —
+        set its base URL to the dlm server and use <Code>x-api-key</Code> for
+        auth. Both non-streaming and streaming (<Code>client.messages.stream</Code>
+        ) responses are supported.
+      </DocP>
+      <div className="mt-5 mb-4">
+        <CopyCommand command="pip install anthropic" />
+      </div>
+      <TerminalBlock
+        command="python"
+        lines={[
+          { text: "  from anthropic import Anthropic", tone: "text" },
+          { text: "  client = Anthropic(", tone: "text" },
+          { text: '      base_url="http://127.0.0.1:8000",', tone: "stream" },
+          { text: '      api_key="dlm",', tone: "muted" },
+          { text: "  )", tone: "text" },
+          { text: "  msg = client.messages.create(", tone: "text" },
+          { text: '      model="dlm",', tone: "muted" },
+          { text: "      max_tokens=128,", tone: "text" },
+          { text: '      messages=[{"role": "user", "content": "Hello"}],', tone: "text" },
+          { text: "  )", tone: "text" },
+          { text: "  print(msg.content[0].text)", tone: "text" },
+        ]}
+      />
+      <DocP>Stream tokens as they arrive:</DocP>
+      <TerminalBlock
+        command="python"
+        lines={[
+          "  with client.messages.stream(",
+          '      model="dlm",',
+          "      max_tokens=128,",
+          '      messages=[{"role": "user", "content": "Hello"}],',
+          "  ) as stream:",
+          "      for text in stream.text_stream:",
+          '          print(text, end="")',
+        ].map((text) => ({ text, tone: "text" as const }))}
+      />
+      <DocNote>
+        The Anthropic SDK appends <Code>/v1/messages</Code> to the base URL, so set{" "}
+        <Code>base_url</Code> to the server root (no <Code>/v1</Code>). See the{" "}
+        <DocA href="/docs/api">HTTP API</DocA> reference for the request and
+        response shapes.
+      </DocNote>
 
       <DocPager prev={prev} next={next} />
     </>

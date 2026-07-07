@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { DocsSidebar } from "@/components/DocsSidebar";
+import { DocToc } from "@/components/DocToc";
 
 export const metadata: Metadata = {
   title: {
@@ -25,6 +26,7 @@ export default function DocsLayout({
         <main id="main" className="min-w-0 max-w-3xl flex-1">
           {children}
         </main>
+        <DocToc />
       </div>
       <Footer />
     </>

@@ -7,6 +7,7 @@ import { Logo } from "./Logo";
 const LINKS = [
   { href: "/how-it-works", label: "How it works" },
   { href: "/benchmarks", label: "Benchmarks" },
+  { href: "/models", label: "Models" },
   { href: "/docs", label: "Docs" },
   { href: "/get-started", label: "Get started" },
 ];
@@ -16,12 +17,31 @@ const REPO = "https://github.com/vedantnimbarte/dlm";
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [stars, setStars] = useState<number | null>(null);
   const pathname = usePathname();
 
   // Off the homepage, surface an explicit Home link (the logo only appears once
   // scrolled, so subpages need a way back at the top).
   const links =
     pathname === "/" ? LINKS : [{ href: "/", label: "Home" }, ...LINKS];
+
+  // Live star count — cached per session, silent on failure (falls back to ★).
+  useEffect(() => {
+    const cached = sessionStorage.getItem("dlm-stars");
+    if (cached) {
+      setStars(Number(cached));
+      return;
+    }
+    fetch("https://api.github.com/repos/vedantnimbarte/dlm")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d && typeof d.stargazers_count === "number") {
+          setStars(d.stargazers_count);
+          sessionStorage.setItem("dlm-stars", String(d.stargazers_count));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -59,7 +79,7 @@ export function Nav() {
             data-collapsed={scrolled}
             aria-hidden
           >
-            {githubCta(false)}
+            {githubCta(false, stars)}
           </span>
           <span className="nav-spacer" style={{ flexGrow: 1 }} aria-hidden />
           <div className="flex items-center gap-8">
@@ -78,7 +98,7 @@ export function Nav() {
             style={{ flexGrow: scrolled ? 0 : 1 }}
             aria-hidden
           />
-          <span className="ml-8">{githubCta(true)}</span>
+          <span className="ml-8">{githubCta(true, stars)}</span>
         </div>
 
         <button
@@ -125,14 +145,20 @@ export function Nav() {
   );
 }
 
+function formatStars(n: number): string {
+  return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
+}
+
 // Shared GitHub CTA. interactive=true → the real link; false → an inert clone
 // used as a left-side width counterweight so the desktop links center exactly.
-function githubCta(interactive: boolean) {
+function githubCta(interactive: boolean, stars?: number | null) {
   const inner = (
     <>
       <GitHubGlyph />
       <span>GitHub</span>
-      <span className="text-text-muted">★</span>
+      <span className="text-text-muted">
+        ★{typeof stars === "number" ? ` ${formatStars(stars)}` : ""}
+      </span>
     </>
   );
   const cls = "btn-secondary h-9 px-3.5 text-[0.875rem]";

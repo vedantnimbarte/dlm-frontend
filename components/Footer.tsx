@@ -9,7 +9,9 @@ const COLS = [
     links: [
       { label: "How it works", href: "/how-it-works" },
       { label: "Benchmarks", href: "/benchmarks" },
+      { label: "Models", href: "/models" },
       { label: "Docs", href: "/docs" },
+      { label: "Blog", href: "/blog" },
       { label: "Get started", href: "/get-started" },
       { label: "About", href: "/about" },
     ],
@@ -18,6 +20,8 @@ const COLS = [
     head: "Source",
     links: [
       { label: "GitHub", href: REPO },
+      { label: "Discussions", href: `${REPO}/discussions` },
+      { label: "Issues", href: `${REPO}/issues` },
       { label: "Apache-2.0", href: `${REPO}/blob/main/LICENSE` },
     ],
   },
