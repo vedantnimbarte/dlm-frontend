@@ -202,6 +202,21 @@ export default function Api() {
           [<Code key="c">dlm_completion_tokens_total</Code>, "Completion tokens generated."],
         ]}
       />
+      <DocP>
+        Under <Code>--stream</Code>, the layer-streaming cache also reports its
+        hit rate and prefetch behavior — watch the miss and prefetch-depth series
+        when tuning <DocA href="/docs/performance">performance</DocA>:
+      </DocP>
+      <DocTable
+        head={["Series", "Meaning"]}
+        rows={[
+          [<Code key="c">dlm_stream_layer_hits_total</Code>, "Layer fetches served from the resident window."],
+          [<Code key="c">dlm_stream_layer_misses_total</Code>, "Fetches that blocked on a load."],
+          [<Code key="c">dlm_stream_layer_evictions_total</Code>, "Layers evicted from the window."],
+          [<Code key="c">dlm_stream_layer_prefetched_total</Code>, "Layers loaded ahead by the prefetch worker."],
+          [<Code key="c">dlm_stream_prefetch_depth</Code>, "Gauge — layers prefetched ahead (auto-tuned under --auto-prefetch)."],
+        ]}
+      />
 
       <DocH2 id="errors">Errors</DocH2>
       <DocP>

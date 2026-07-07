@@ -53,6 +53,18 @@ export default function Config() {
             "Size of the streaming window. Defaults to the VRAM plan's layers_to_load.",
           ],
           [
+            <Code key="f">--prefetch-depth N</Code>,
+            "Layers to prefetch ahead while streaming (default 1; 0 disables). Clamped to the window minus one.",
+          ],
+          [
+            <Code key="f">--auto-prefetch</Code>,
+            "Auto-tune the prefetch depth at runtime from measured load-vs-compute time, instead of a fixed depth.",
+          ],
+          [
+            <Code key="f">--quantize-kv</Code>,
+            "Store the KV cache int8-quantized — about half the KV memory (which can exceed the weights at long context), at a small approximation.",
+          ],
+          [
             <Code key="f">--device gpu | cpu</Code>,
             "Select the compute kernel. GPU is the default on a cuda-kernels build; cpu forces the host kernel.",
           ],
