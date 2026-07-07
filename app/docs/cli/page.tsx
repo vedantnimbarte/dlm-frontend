@@ -145,8 +145,9 @@ export default function Cli() {
           [<Code key="f">--api-key</Code>, "Require a bearer token on /v1/*."],
           [<Code key="f">--chat-template</Code>, "plain | chatml | llama3."],
           [<Code key="f">--draft-model-path</Code>, "Enable speculative decoding with a draft model."],
+          [<Code key="f">--prefix-cache-size</Code>, "Cache N prompt-prefix KV snapshots so shared prefixes skip re-prefill."],
           [<Code key="f">--multi-gpu-ids</Code>, "Pipeline-parallel across local GPUs, e.g. 0,1,2."],
-          [<Code key="f">--distributed-mode worker</Code>, "Serve a layer shard to a master over TCP."],
+          [<Code key="f">--distributed-mode</Code>, "master --worker-nodes … coordinates shards; worker serves one shard over TCP."],
         ]}
       />
 

@@ -41,7 +41,10 @@ export default function Api() {
         rows={[
           [<Code key="m">POST</Code>, <Code key="p">/v1/chat/completions</Code>, "OpenAI chat completion (with optional SSE streaming)."],
           [<Code key="m">POST</Code>, <Code key="p">/v1/messages</Code>, "Anthropic Messages API (with SSE streaming)."],
+          [<Code key="m">POST</Code>, <Code key="p">/v1/messages/count_tokens</Code>, "Count tokens for an Anthropic-shaped request without generating."],
           [<Code key="m">GET</Code>, <Code key="p">/v1/models</Code>, "List the served model."],
+          [<Code key="m">GET</Code>, <Code key="p">/metrics</Code>, "Prometheus counters — requests and prompt/completion tokens."],
+          [<Code key="m">GET</Code>, <Code key="p">/health</Code>, "Liveness check (also GET /). Open — no auth."],
         ]}
       />
 
@@ -75,8 +78,9 @@ export default function Api() {
           [
             <Code key="f">temperature</Code>,
             <>
-              Plus <Code>top_p</Code>, <Code>top_k</Code>, <Code>seed</Code>,{" "}
-              <Code>stop</Code> — see Sampling parameters below.
+              Plus <Code>top_p</Code>, <Code>top_k</Code>, <Code>min_p</Code>,{" "}
+              <Code>repetition_penalty</Code>, <Code>seed</Code>, <Code>stop</Code>{" "}
+              — see Sampling parameters below.
             </>,
           ],
         ]}
@@ -160,6 +164,8 @@ export default function Api() {
           [<Code key="p">temperature</Code>, "Softmax temperature. 0 → deterministic greedy."],
           [<Code key="p">top_p</Code>, "Nucleus sampling threshold."],
           [<Code key="p">top_k</Code>, "Top-k sampling cutoff."],
+          [<Code key="p">min_p</Code>, "Min-p truncation — drop tokens below a fraction of the top probability."],
+          [<Code key="p">repetition_penalty</Code>, "Penalize already-generated tokens to curb loops."],
           [<Code key="p">seed</Code>, "Seed the sampler for reproducibility."],
           [<Code key="p">stop</Code>, "Stop sequences that truncate the completion."],
           [<Code key="p">max_tokens</Code>, "Cap the number of generated tokens."],
@@ -179,6 +185,21 @@ export default function Api() {
         lines={[
           { text: '  {"object":"list","data":[{"id":"dlm",', tone: "muted" },
           { text: '     "object":"model","owned_by":"dlm"}]}', tone: "text" },
+        ]}
+      />
+
+      <DocH2 id="metrics">Metrics</DocH2>
+      <DocP>
+        <Code>GET /metrics</Code> exposes Prometheus-format counters — scrape it
+        with any Prometheus-compatible collector. Every request is also written to
+        an access log on stderr (<Code>METHOD PATH → status (Nms)</Code>).
+      </DocP>
+      <DocTable
+        head={["Counter", "Meaning"]}
+        rows={[
+          [<Code key="c">dlm_requests_total</Code>, "Requests served."],
+          [<Code key="c">dlm_prompt_tokens_total</Code>, "Prompt tokens processed."],
+          [<Code key="c">dlm_completion_tokens_total</Code>, "Completion tokens generated."],
         ]}
       />
 

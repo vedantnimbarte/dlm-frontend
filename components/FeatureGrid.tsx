@@ -36,6 +36,16 @@ const FEATURES = [
     body: "Partition the layer stack across cards and hosts to widen the resident window and push throughput up.",
     state: "shipped",
   },
+  {
+    title: "Cross-request prefix cache",
+    body: "Requests that share a system prompt resume from a cached KV snapshot instead of re-prefilling it — real savings on shared prefixes.",
+    state: "shipped",
+  },
+  {
+    title: "Continuous batching",
+    body: "A background scheduler admits concurrent requests into each streaming pass, with per-request output identical to running alone.",
+    state: "shipped",
+  },
 ];
 
 export function FeatureGrid() {
