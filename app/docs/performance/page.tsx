@@ -53,6 +53,10 @@ export default function Performance() {
             "Concurrent requests share each streaming pass, so aggregate throughput rises even when single-stream tok/s doesn't.",
           ],
           [
+            <Code key="l">--prefix-cache-size</Code>,
+            "Cache prompt-prefix KV snapshots — requests that share a system prompt resume from the snapshot instead of re-prefilling it. Big win when many requests share a long prefix.",
+          ],
+          [
             <Code key="l">--context-length</Code>,
             "A longer context spends more of the VRAM budget on the KV cache, leaving fewer layers resident. Shorten it to keep more layers in VRAM.",
           ],
