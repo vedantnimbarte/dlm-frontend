@@ -1,7 +1,7 @@
 import { VramVisualizer } from "./VramVisualizer";
 import { HeroMark } from "./HeroMark";
 
-const REPO = "https://github.com/vedantnimbarte/Flip";
+const REPO = "https://github.com/vedantnimbarte/dlm";
 
 export function Hero() {
   return (
@@ -16,7 +16,7 @@ export function Hero() {
           Run a 70B model on 16&nbsp;GB of VRAM.
         </h1>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-text-muted animate-fade-up [animation-delay:120ms]">
-          flip streams transformer layers in and out of your GPU as it computes —
+          dlm streams transformer layers in and out of your GPU as it computes —
           so model size stops being a hardware wall.
         </p>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3 animate-fade-up [animation-delay:180ms]">

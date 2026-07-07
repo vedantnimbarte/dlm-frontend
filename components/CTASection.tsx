@@ -1,6 +1,6 @@
 import { Reveal } from "./Reveal";
 
-const REPO = "https://github.com/vedantnimbarte/Flip";
+const REPO = "https://github.com/vedantnimbarte/dlm";
 
 export function CTASection() {
   return (

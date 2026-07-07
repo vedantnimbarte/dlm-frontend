@@ -9,7 +9,7 @@ const LINKS = [
   { href: "/get-started", label: "Get started" },
 ];
 
-const REPO = "https://github.com/vedantnimbarte/Flip";
+const REPO = "https://github.com/vedantnimbarte/dlm";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -37,7 +37,7 @@ export function Nav() {
           href="/"
           className="nav-logo items-center rounded-full p-0.5"
           data-show={scrolled}
-          aria-label="flip — home"
+          aria-label="dlm — home"
         >
           <Logo size={32} priority />
         </a>

@@ -456,12 +456,12 @@
     }
   }
 
-  /* Wordmark "flip" dot — the layer that flips between stream/compute state */
-  .flip-dot {
+  /* Wordmark state pip — the streaming layer toggling stream/compute state */
+  .dlm-dot {
     background: var(--accent-stream);
-    animation: flip-dot 3.2s steps(1, end) infinite;
+    animation: dlm-dot 3.2s steps(1, end) infinite;
   }
-  @keyframes flip-dot {
+  @keyframes dlm-dot {
     0%,
     45% {
       background: var(--accent-stream);
@@ -472,12 +472,12 @@
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .flip-dot {
+    .dlm-dot {
       animation: none;
     }
   }
 
-  /* Double-buffer flip: A executes (amber, full) while B streams in (teal fill),
+  /* Double-buffer swap: A executes (amber, full) while B streams in (teal fill),
      then they swap. Period 3.6s, B offset by half. */
   .buffer-a,
   .buffer-b {

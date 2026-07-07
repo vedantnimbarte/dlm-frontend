@@ -13,12 +13,12 @@ const FEATURES = [
   },
   {
     title: "OpenAI-compatible API",
-    body: "Drop-in /v1/chat/completions endpoint, so existing clients and SDKs point at flip with a URL change.",
+    body: "Drop-in /v1/chat/completions endpoint, so existing clients and SDKs point at dlm with a URL change.",
     state: "planned",
   },
   {
     title: "Dynamic VRAM profiling",
-    body: "flip profile measures your card and reports exactly how many layers stay resident — before you load a single weight.",
+    body: "dlm profile measures your card and reports exactly how many layers stay resident — before you load a single weight.",
     state: "shipped",
   },
   {

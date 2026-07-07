@@ -1,7 +1,7 @@
 import { Nav } from "./Nav";
 import { Footer } from "./Footer";
 
-const REPO = "https://github.com/vedantnimbarte/Flip";
+const REPO = "https://github.com/vedantnimbarte/dlm";
 
 export function PagePlaceholder({
   eyebrow,

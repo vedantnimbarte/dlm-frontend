@@ -11,7 +11,7 @@ export default function HowItWorks() {
   return (
     <PagePlaceholder
       eyebrow="Deep dive"
-      title="How the flip works, end to end."
+      title="How dlm works, end to end."
       intro="The long-form technical walkthrough of layer streaming — the partition, the schedule, and the math the engine runs."
       outline={[
         "VRAM partitioning: pinned / streaming / cache zones",

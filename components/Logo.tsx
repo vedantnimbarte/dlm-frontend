@@ -16,7 +16,7 @@ export function Logo({
   return (
     <Image
       src="/logo-mark.png"
-      alt="flip"
+      alt="dlm"
       width={size}
       height={size}
       priority={priority}

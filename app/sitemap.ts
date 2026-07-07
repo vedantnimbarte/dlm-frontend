@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const base = "https://flip.dev";
+const base = "https://dlm.dev";
 const routes = ["", "/how-it-works", "/benchmarks", "/get-started", "/about"];
 
 export default function sitemap(): MetadataRoute.Sitemap {

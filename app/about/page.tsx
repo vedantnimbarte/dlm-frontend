@@ -11,10 +11,10 @@ export default function About() {
   return (
     <PagePlaceholder
       eyebrow="Story & roadmap"
-      title="Why it's called flip."
-      intro="The name is the mechanic: layers flipping through VRAM at the microsecond level. Here's the story, the roadmap, and where to read the specs."
+      title="Why it's called dlm."
+      intro="dlm is short for Dynamic LLM: the model loads dynamically, streaming layers through VRAM at the microsecond level instead of resident-loading the whole thing. Here's the story, the roadmap, and where to read the specs."
       outline={[
-        "The naming story — flipping layers, not loading them",
+        "The naming story — Dynamic LLM: streaming layers, not loading them",
         "Phase 1 → 2 → 3 roadmap",
         "Apache-2.0 license",
         "Links to PRD.md, specs.md, and the repo",
