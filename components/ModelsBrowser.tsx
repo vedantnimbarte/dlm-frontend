@@ -37,11 +37,11 @@ export function ModelsBrowser() {
           const list: Model[] = Array.isArray(d.models) ? d.models : [];
           setModels(list);
           setStatus("idle");
-          // Seed the chips once, from the top providers the hub returns.
+          // Seed providers once, from the top authors the hub returns.
           setProviders((prev) =>
             prev.length
               ? prev
-              : [...new Set(list.map((m) => m.id.split("/")[0]))].slice(0, 6)
+              : [...new Set(list.map((m) => m.id.split("/")[0]))].slice(0, 15)
           );
         })
         .catch((e) => {
@@ -86,19 +86,37 @@ export function ModelsBrowser() {
         ) : null}
       </div>
 
-      {/* Provider chips — top authors from the hub */}
+      {/* Provider chips + dropdown — top authors from the hub */}
       {providers.length ? (
-        <div className="mt-3 flex flex-wrap gap-2">
-          {providers.map((c) => (
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <span className="eyebrow mr-1">Top providers</span>
+          {providers.slice(0, 6).map((c) => (
             <button
               key={c}
               type="button"
               onClick={() => setQuery(c)}
-              className="rounded-full border border-glass-border bg-white/[0.03] px-3 py-1 font-mono text-[0.72rem] text-text-muted transition-colors hover:border-text-muted/50 hover:text-text"
+              className={`rounded-full border px-3 py-1 font-mono text-[0.72rem] transition-colors ${
+                query === c
+                  ? "border-accent-stream/50 bg-accent-stream/10 text-accent-stream"
+                  : "border-glass-border bg-white/[0.03] text-text-muted hover:border-text-muted/50 hover:text-text"
+              }`}
             >
               {c}
             </button>
           ))}
+          <select
+            value={providers.includes(query) ? query : ""}
+            onChange={(e) => e.target.value && setQuery(e.target.value)}
+            aria-label="Select a provider"
+            className="rounded-full border border-glass-border bg-white/[0.03] px-3 py-1 font-mono text-[0.72rem] text-text-muted transition-colors hover:border-text-muted/50 hover:text-text focus:outline-none"
+          >
+            <option value="">More…</option>
+            {providers.map((p) => (
+              <option key={p} value={p} className="bg-surface text-text">
+                {p}
+              </option>
+            ))}
+          </select>
         </div>
       ) : null}
 
