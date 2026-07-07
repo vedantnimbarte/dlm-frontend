@@ -125,7 +125,8 @@ export default function Clients() {
         dlm also serves the Anthropic Messages API at{" "}
         <Code>/v1/messages</Code>, so the <Code>anthropic</Code> SDK works too —
         set its base URL to the dlm server and use <Code>x-api-key</Code> for
-        auth. Streaming isn&rsquo;t supported on this path yet.
+        auth. Both non-streaming and streaming (<Code>client.messages.stream</Code>
+        ) responses are supported.
       </DocP>
       <div className="mt-5 mb-4">
         <CopyCommand command="pip install anthropic" />
@@ -145,6 +146,19 @@ export default function Clients() {
           { text: "  )", tone: "text" },
           { text: "  print(msg.content[0].text)", tone: "text" },
         ]}
+      />
+      <DocP>Stream tokens as they arrive:</DocP>
+      <TerminalBlock
+        command="python"
+        lines={[
+          "  with client.messages.stream(",
+          '      model="dlm",',
+          "      max_tokens=128,",
+          '      messages=[{"role": "user", "content": "Hello"}],',
+          "  ) as stream:",
+          "      for text in stream.text_stream:",
+          '          print(text, end="")',
+        ].map((text) => ({ text, tone: "text" as const }))}
       />
       <DocNote>
         The Anthropic SDK appends <Code>/v1/messages</Code> to the base URL, so set{" "}

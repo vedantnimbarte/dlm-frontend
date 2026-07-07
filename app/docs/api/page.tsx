@@ -5,6 +5,7 @@ import {
   DocTitle,
   DocLead,
   DocH2,
+  DocH3,
   DocP,
   DocUl,
   DocLi,
@@ -40,7 +41,7 @@ export default function Api() {
         rows={[
           [<Code key="m">POST</Code>, <Code key="p">/v1/chat/completions</Code>, "OpenAI chat completion (with optional SSE streaming)."],
           [<Code key="m">POST</Code>, <Code key="p">/v1/completions</Code>, "OpenAI text completion."],
-          [<Code key="m">POST</Code>, <Code key="p">/v1/messages</Code>, "Anthropic Messages API (non-streaming)."],
+          [<Code key="m">POST</Code>, <Code key="p">/v1/messages</Code>, "Anthropic Messages API (with SSE streaming)."],
           [<Code key="m">GET</Code>, <Code key="p">/v1/models</Code>, "List the served model."],
         ]}
       />
@@ -97,13 +98,37 @@ export default function Api() {
           ],
         ]}
       />
-      <DocNote tone="compute">
-        Streaming isn&rsquo;t supported on <Code>/v1/messages</Code> yet — send{" "}
-        <Code>&quot;stream&quot;: false</Code> (a streaming request returns 400).
-        For token-by-token output, use the OpenAI{" "}
-        <Code>/v1/chat/completions</Code> SSE path above. <Code>stop_reason</Code>{" "}
-        is <Code>stop_sequence</Code> when a stop is hit, otherwise{" "}
-        <Code>max_tokens</Code>.
+      <DocH3 id="messages-streaming">Streaming</DocH3>
+      <DocP>
+        Set <Code>&quot;stream&quot;: true</Code> to stream the reply as Server-Sent
+        Events, following the sequence Anthropic clients expect:
+      </DocP>
+      <DocUl>
+        <DocLi>
+          <Code>message_start</Code> — the opening message envelope.
+        </DocLi>
+        <DocLi>
+          <Code>content_block_start</Code> — an empty text block at index 0.
+        </DocLi>
+        <DocLi>
+          <Code>content_block_delta</Code> — a run of <Code>text_delta</Code>{" "}
+          events, one per token.
+        </DocLi>
+        <DocLi>
+          <Code>content_block_stop</Code> — the text block closes.
+        </DocLi>
+        <DocLi>
+          <Code>message_delta</Code> — the final <Code>stop_reason</Code> and{" "}
+          <Code>output_tokens</Code>.
+        </DocLi>
+        <DocLi>
+          <Code>message_stop</Code> — the stream ends.
+        </DocLi>
+      </DocUl>
+      <DocNote>
+        Each frame carries both an <Code>event:</Code> and a <Code>data:</Code>{" "}
+        line. <Code>stop_reason</Code> is <Code>stop_sequence</Code> when a stop is
+        hit, otherwise <Code>max_tokens</Code>.
       </DocNote>
 
       <DocH2 id="sampling">Sampling parameters</DocH2>
