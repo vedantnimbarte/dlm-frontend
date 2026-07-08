@@ -57,6 +57,27 @@ export default function Install() {
         </DocLi>
       </DocUl>
 
+      <DocH2 id="update">Update &amp; uninstall</DocH2>
+      <DocP>
+        Updating just reinstalls the latest release (same{" "}
+        <Code>DLM_INSTALL_DIR</Code> / <Code>DLM_CPU</Code> env as install);
+        uninstalling removes the binary.
+      </DocP>
+      <div className="mt-5 space-y-2.5">
+        <CopyCommand command="curl -fsSL https://raw.githubusercontent.com/vedantnimbarte/dlm/main/update.sh | sh" />
+        <CopyCommand command="curl -fsSL https://raw.githubusercontent.com/vedantnimbarte/dlm/main/uninstall.sh | sh" />
+      </div>
+
+      <DocH2 id="completions">Shell completions</DocH2>
+      <DocP>
+        <Code>dlm completions &lt;shell&gt;</Code> prints a completion script to
+        stdout for bash, zsh, fish, elvish, or powershell. Redirect it to your
+        shell&rsquo;s completions directory — e.g. for bash:
+      </DocP>
+      <div className="mt-5">
+        <CopyCommand command="dlm completions bash > ~/.local/share/bash-completion/completions/dlm" />
+      </div>
+
       <DocH2 id="from-source">Build from source</DocH2>
       <DocP>
         Rust users can build directly from the repo. Both of these compile the

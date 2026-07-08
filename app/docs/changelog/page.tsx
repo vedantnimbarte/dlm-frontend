@@ -118,7 +118,14 @@ export default function Changelog() {
         </DocLi>
         <DocLi>
           <strong className="text-text">One-line installer</strong> — a prebuilt
-          binary per platform, with automatic CUDA/CPU build selection.
+          binary per platform, with automatic CUDA/CPU build selection, plus{" "}
+          <Code>update.sh</Code> / <Code>uninstall.sh</Code> for the rest of the
+          binary&rsquo;s lifecycle.
+        </DocLi>
+        <DocLi>
+          <strong className="text-text">Shell completions</strong> —{" "}
+          <Code>dlm completions &lt;shell&gt;</Code> generates bash/zsh/fish/
+          elvish/powershell completion scripts.
         </DocLi>
       </DocUl>
 
