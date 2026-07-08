@@ -12,6 +12,23 @@ const LINKS = [
   { href: "/get-started", label: "Get started" },
 ];
 
+// Highlighted CTA for the VRAM calculator — the headline interactive tool.
+function CanIRunIt({ onClick }: { onClick?: () => void }) {
+  return (
+    <a
+      href="/calculator"
+      onClick={onClick}
+      className="inline-flex h-9 items-center gap-2 rounded-full border border-accent-stream/50 bg-accent-stream/15 px-3.5 text-[0.875rem] font-medium text-accent-stream transition-colors hover:border-accent-stream/70 hover:bg-accent-stream/25"
+    >
+      <span className="relative flex h-1.5 w-1.5" aria-hidden>
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-stream opacity-60" />
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent-stream" />
+      </span>
+      Can I run it?
+    </a>
+  );
+}
+
 const REPO = "https://github.com/vedantnimbarte/dlm";
 
 export function Nav() {
@@ -75,10 +92,11 @@ export function Nav() {
             so equal spacers put the links at true center (not just track-center). */}
         <div className="hidden flex-1 items-center md:flex">
           <span
-            className="nav-ghost mr-8 invisible"
+            className="nav-ghost mr-8 invisible flex items-center gap-3"
             data-collapsed={scrolled}
             aria-hidden
           >
+            <CanIRunIt />
             {githubCta(false, stars)}
           </span>
           <span className="nav-spacer" style={{ flexGrow: 1 }} aria-hidden />
@@ -98,7 +116,10 @@ export function Nav() {
             style={{ flexGrow: scrolled ? 0 : 1 }}
             aria-hidden
           />
-          <span className="ml-8">{githubCta(true, stars)}</span>
+          <div className="ml-8 flex items-center gap-3">
+            <CanIRunIt />
+            {githubCta(true, stars)}
+          </div>
         </div>
 
         <button
@@ -119,6 +140,9 @@ export function Nav() {
           className="glass border-x-0 border-b-0 md:hidden"
         >
           <div className="shell flex flex-col gap-1 py-3">
+            <div className="mb-1 px-1">
+              <CanIRunIt onClick={() => setOpen(false)} />
+            </div>
             {links.map((l) => (
               <a
                 key={l.href}
