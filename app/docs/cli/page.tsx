@@ -28,7 +28,7 @@ export default function Cli() {
     <>
       <DocTitle>CLI reference</DocTitle>
       <DocLead>
-        One binary, seven subcommands. Run <Code>dlm --help</Code> for the
+        One binary, eight subcommands. Run <Code>dlm --help</Code> for the
         top-level list, or <Code>dlm &lt;command&gt; --help</Code> for a
         command&rsquo;s full flag set.
       </DocLead>
@@ -43,6 +43,7 @@ export default function Cli() {
           [<Code key="c">generate</Code>, "Run the CPU (or GPU) generation loop."],
           [<Code key="c">tokenize</Code>, "Byte-level BPE encode/decode round-trip."],
           [<Code key="c">doctor</Code>, "Check the machine + run a self-test."],
+          [<Code key="c">completions</Code>, "Print a shell completion script."],
         ]}
       />
 
@@ -208,6 +209,18 @@ export default function Cli() {
           With it, dlm also confirms the checkpoint loads and tokenizes.
         </DocLi>
       </DocUl>
+
+      {/* completions */}
+      <DocH2 id="completions">completions</DocH2>
+      <DocP>
+        Print a shell completion script to stdout for <Code>bash</Code>,{" "}
+        <Code>zsh</Code>, <Code>fish</Code>, <Code>elvish</Code>, or{" "}
+        <Code>powershell</Code>. Redirect it into your shell&rsquo;s completions
+        directory — see <DocA href="/docs/install#completions">Installation</DocA>.
+      </DocP>
+      <div className="mt-5">
+        <CopyCommand command="dlm completions bash > ~/.local/share/bash-completion/completions/dlm" />
+      </div>
 
       <DocPager prev={prev} next={next} />
     </>
