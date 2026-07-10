@@ -7,6 +7,7 @@ import { CopyCommand } from "@/components/CopyCommand";
 import { TerminalBlock } from "@/components/TerminalBlock";
 import { TerminalDemo } from "@/components/TerminalDemo";
 import { Tabs } from "@/components/Tabs";
+import { ReportBug } from "@/components/ReportBug";
 import { CTASection } from "@/components/CTASection";
 
 const REPO = "https://github.com/vedantnimbarte/dlm";
@@ -40,6 +41,86 @@ const STEPS = [
     body: "Start the OpenAI-compatible HTTP server. Existing clients — Open WebUI, the OpenAI SDKs — point at dlm with a URL change and talk to it unchanged.",
     command: `dlm serve --model-path ./models/Qwen2.5-0.5B-Instruct --port 8000`,
     note: "Exposes the OpenAI POST /v1/chat/completions and Anthropic POST /v1/messages endpoints, plus GET /v1/models. Add \"stream\": true for token-by-token SSE. Concurrent requests are continuously batched.",
+  },
+];
+
+// Sourced from the Troubleshooting doc — the failures a new user actually hits
+// on their first pull + serve. Keep in sync with /docs/troubleshooting.
+const ISSUES: { symptom: React.ReactNode; fix: React.ReactNode }[] = [
+  {
+    symptom: <>&ldquo;Won&rsquo;t fit&rdquo; — even one layer exceeds the budget</>,
+    fix: (
+      <>
+        Use a smaller model, more VRAM, a shorter{" "}
+        <span className="font-mono text-text">--context-length</span>, or fewer{" "}
+        <span className="font-mono text-text">--resident-layers</span>. See{" "}
+        <a href="/docs/performance" className="text-accent-stream underline-offset-2 hover:underline">
+          Performance tuning
+        </a>
+        .
+      </>
+    ),
+  },
+  {
+    symptom: <>GGUF / PyTorch-only repo rejected</>,
+    fix: (
+      <>
+        dlm loads <span className="text-text">safetensors only</span>. Pull a
+        safetensors variant or convert the checkpoint. See{" "}
+        <a href="/docs/models" className="text-accent-stream underline-offset-2 hover:underline">
+          Model support
+        </a>
+        .
+      </>
+    ),
+  },
+  {
+    symptom: <>401 — gated or private repo on pull</>,
+    fix: (
+      <>
+        Pass <span className="font-mono text-text">--token</span> or set{" "}
+        <span className="font-mono text-text">$HF_TOKEN</span> before pulling.
+      </>
+    ),
+  },
+  {
+    symptom: <>CUDA runtime can&rsquo;t load at startup</>,
+    fix: (
+      <>
+        dlm warns and falls back to CPU on its own. Check{" "}
+        <span className="font-mono text-text">cudart</span> is on the library
+        path and <span className="font-mono text-text">CUDA_PATH</span> is set.
+      </>
+    ),
+  },
+  {
+    symptom: (
+      <>
+        <span className="font-mono text-text">--device gpu</span> errors on a CPU
+        build
+      </>
+    ),
+    fix: (
+      <>
+        A CPU-only build can&rsquo;t use the GPU. Rebuild with{" "}
+        <span className="font-mono text-text">--features cuda-kernels</span>. See{" "}
+        <a href="/docs/build" className="text-accent-stream underline-offset-2 hover:underline">
+          Build &amp; features
+        </a>
+        .
+      </>
+    ),
+  },
+  {
+    symptom: <>Model directory not recognized</>,
+    fix: (
+      <>
+        The path needs <span className="font-mono text-text">config.json</span>{" "}
+        and one or more <span className="font-mono text-text">*.safetensors</span>{" "}
+        shards. <span className="font-mono text-text">dlm pull</span> fetches the
+        right files.
+      </>
+    ),
   },
 ];
 
@@ -316,6 +397,49 @@ export default function GetStarted() {
               Pass <span className="font-mono text-text">--model-path</span> to
               check a checkpoint loads and tokenizes.
             </p>
+          </Reveal>
+        </Section>
+
+        {/* Troubleshooting — the common first-run failures, inline */}
+        <Section
+          eyebrow="If you hit issues"
+          title="First run not working? Start here."
+          intro="Almost every first-run problem is one of these: a model that won't fit, an unsupported checkpoint, a gated repo, or a GPU build that can't find its runtime. Run dlm doctor first — it reports your backend and free VRAM, self-checks CPU inference, and with --model-path confirms the checkpoint loads and tokenizes."
+        >
+          <Reveal delay={80} className="mt-10 max-w-xl">
+            <CopyCommand command="dlm doctor --model-path ./models/Qwen2.5-0.5B-Instruct" />
+          </Reveal>
+
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {ISSUES.map((issue, i) => (
+              <Reveal key={i} delay={i * 60}>
+                <div className="glass rounded-card p-6">
+                  <h3 className="font-display text-[1rem] font-medium text-text">
+                    {issue.symptom}
+                  </h3>
+                  <p className="mt-2 text-[0.82rem] leading-relaxed text-text-muted">
+                    {issue.fix}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal delay={120} className="mt-8 max-w-2xl">
+            <p className="text-[0.9rem] leading-relaxed text-text-muted">
+              Still stuck? The full{" "}
+              <a
+                href="/docs/troubleshooting"
+                className="text-accent-stream underline-offset-2 hover:underline"
+              >
+                Troubleshooting guide
+              </a>{" "}
+              has the complete error list and an FAQ. If it&rsquo;s a bug, file
+              an issue — include your <span className="font-mono text-text">dlm doctor</span> output.
+            </p>
+            <div className="mt-5">
+              <ReportBug className="btn-primary h-10 text-[0.875rem]" />
+            </div>
           </Reveal>
         </Section>
 

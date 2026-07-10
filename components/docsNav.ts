@@ -14,6 +14,7 @@ export const DOCS_NAV: { group: string; items: DocLink[] }[] = [
     group: "Get started",
     items: [
       { href: "/docs", label: "Overview", keywords: "intro quickstart install" },
+      { href: "/get-started", label: "Get started walkthrough", keywords: "walkthrough guided first run quickstart install pull serve doctor debug troubleshooting issues errors new user" },
       { href: "/docs/install", label: "Installation", keywords: "curl cargo build rust cuda rocm setup" },
       { href: "/docs/recommended-models", label: "Recommended models", keywords: "pull huggingface llama qwen mistral gguf models gallery" },
     ],
