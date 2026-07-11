@@ -3,9 +3,10 @@ import { Reveal } from "./Reveal";
 // Every number carries its conditions inline (§8). Honesty > spin.
 const STATS = [
   {
-    value: "5–12",
+    value: "~5–12",
     unit: "tok/s",
-    label: "70B, Q4 · 16 GB card · PCIe 4.0, warm NVMe cache",
+    label:
+      "70B, Q4 · 16 GB card · PCIe 4.0, warm NVMe — projected from the throughput model, not yet measured on hardware",
   },
   {
     value: "< 50",

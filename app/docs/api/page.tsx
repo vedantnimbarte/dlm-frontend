@@ -40,6 +40,7 @@ export default function Api() {
         head={["Method", "Path", "Purpose"]}
         rows={[
           [<Code key="m">POST</Code>, <Code key="p">/v1/chat/completions</Code>, "OpenAI chat completion (with optional SSE streaming)."],
+          [<Code key="m">POST</Code>, <Code key="p">/v1/completions</Code>, "OpenAI legacy text completion on a raw prompt (with optional SSE streaming)."],
           [<Code key="m">POST</Code>, <Code key="p">/v1/messages</Code>, "Anthropic Messages API (with SSE streaming)."],
           [<Code key="m">POST</Code>, <Code key="p">/v1/messages/count_tokens</Code>, "Count tokens for an Anthropic-shaped request without generating."],
           [<Code key="m">GET</Code>, <Code key="p">/v1/models</Code>, "List the served model."],
@@ -85,6 +86,15 @@ export default function Api() {
           ],
         ]}
       />
+
+      <DocNote>
+        <Code>POST /v1/completions</Code> is the legacy OpenAI text-completion
+        shape: send a raw <Code>prompt</Code> string instead of{" "}
+        <Code>messages</Code> (no chat template is applied) and get back a{" "}
+        <Code>text_completion</Code> object with the reply in{" "}
+        <Code>choices[].text</Code>. Same sampling fields and{" "}
+        <Code>&quot;stream&quot;: true</Code> SSE support as chat completions.
+      </DocNote>
 
       <DocH2 id="messages">Anthropic Messages API</DocH2>
       <DocP>

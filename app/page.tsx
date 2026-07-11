@@ -89,9 +89,9 @@ export default function Home() {
 
         {/* 6 · Proof */}
         <Section
-          eyebrow="Measured, with conditions"
+          eyebrow="Modeled, with conditions"
           title="The numbers, and exactly when they hold."
-          intro="Every figure states its hardware so you can judge it against your own."
+          intro="Resident-layer counts come from the engine's own budget math; the tok/s band is a projection from a throughput model, not a measured benchmark. Every figure states its hardware so you can judge it against your own."
         >
           <ProofStats />
         </Section>

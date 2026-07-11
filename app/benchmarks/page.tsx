@@ -18,14 +18,14 @@ import {
 export const metadata: Metadata = {
   title: "Benchmarks",
   description:
-    "A VRAM × model-size matrix of layers resident and tok/s, computed from the engine's own budget formula. Every figure states its conditions.",
+    "A VRAM × model-size matrix: layers resident from the engine's own budget formula, plus a projected (unmeasured) tok/s band. Every figure states its conditions.",
 };
 
 const METHOD = [
   {
     k: "Source",
-    v: "The engine's budget formula",
-    d: "Every figure is computed from the same LayersToLoad formula the engine runs — no hand-typed numbers.",
+    v: "Budget formula + throughput model",
+    d: "Resident-layer counts are computed from the same LayersToLoad formula the engine runs — reproducible with `dlm profile`. The tok/s band is a separate throughput model (a compute ceiling scaled by how much streaming hides under compute) — an estimate, not a measurement.",
   },
   {
     k: "Weights",
@@ -59,12 +59,15 @@ export default function Benchmarks() {
           <Reveal>
             <span className="eyebrow">Performance</span>
             <h1 className="mt-4 max-w-3xl font-display text-[clamp(1.75rem,3.9vw,2.85rem)] font-semibold leading-[1.02] tracking-[-0.025em] text-text">
-              Numbers you can hold the project to.
+              What the budget math projects.
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-text-muted">
-              Performance figures from the engine's budget math, each stated with
-              its conditions — PCIe generation, NVMe, GPU — so you can reproduce
-              any of them on your own card with one command.
+              The resident-layer figures come straight from the engine's budget
+              math — reproduce them on your own card with{" "}
+              <span className="font-mono text-accent-stream">dlm profile</span>.
+              The tok/s bands are projections from a throughput model, stated
+              with their conditions (PCIe generation, NVMe, GPU) — estimates, not
+              measured benchmarks.
             </p>
           </Reveal>
         </section>
@@ -73,7 +76,7 @@ export default function Benchmarks() {
         <Section
           eyebrow="Headline numbers"
           title="The numbers, and exactly when they hold."
-          intro="The 70B-on-16 GB case, stated with its hardware. Each figure carries its conditions inline — spin-free."
+          intro="The 70B-on-16 GB case, stated with its hardware. The throughput figure is a projection, not a measured run — each figure carries its conditions inline, spin-free."
         >
           <ProofStats />
         </Section>
