@@ -78,8 +78,9 @@ export default function Errors() {
       />
 
       <DocP>
-        Auth applies to <Code>/v1/*</Code> routes only — <Code>GET /</Code> and{" "}
-        <Code>GET /health</Code> stay open for liveness checks. See{" "}
+        Auth applies to every route — including <Code>GET /metrics</Code> — except{" "}
+        <Code>GET /</Code>, <Code>GET /health</Code> and <Code>GET /healthz</Code>,
+        which stay open for liveness checks. See{" "}
         <DocA href="/docs/deployment">Deployment &amp; security</DocA> for auth
         setup and <DocA href="/docs/troubleshooting">Troubleshooting</DocA> for
         fixes.

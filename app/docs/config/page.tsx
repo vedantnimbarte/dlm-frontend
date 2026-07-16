@@ -136,7 +136,7 @@ export default function Config() {
         rows={[
           [
             <Code key="f">--api-key</Code>,
-            "Require a bearer token on all /v1/* routes. See Deployment & security.",
+            "Require a key on every route except the /, /health and /healthz liveness probes — /metrics included. Accepts Authorization: Bearer or x-api-key. See Deployment & security.",
           ],
         ]}
       />

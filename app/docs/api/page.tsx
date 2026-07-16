@@ -44,8 +44,8 @@ export default function Api() {
           [<Code key="m">POST</Code>, <Code key="p">/v1/messages</Code>, "Anthropic Messages API (with SSE streaming)."],
           [<Code key="m">POST</Code>, <Code key="p">/v1/messages/count_tokens</Code>, "Count tokens for an Anthropic-shaped request without generating."],
           [<Code key="m">GET</Code>, <Code key="p">/v1/models</Code>, "List the served model."],
-          [<Code key="m">GET</Code>, <Code key="p">/metrics</Code>, "Prometheus counters — requests and prompt/completion tokens."],
-          [<Code key="m">GET</Code>, <Code key="p">/health</Code>, "Liveness check (also GET /). Open — no auth."],
+          [<Code key="m">GET</Code>, <Code key="p">/metrics</Code>, "Prometheus counters — requests and prompt/completion tokens. Requires the key under --api-key."],
+          [<Code key="m">GET</Code>, <Code key="p">/health</Code>, "Liveness check (also GET / and /healthz). The only routes that stay open under --api-key."],
         ]}
       />
 
@@ -237,8 +237,11 @@ export default function Api() {
 
       <DocH2 id="auth">Authentication</DocH2>
       <DocP>
-        Start the server with <Code>--api-key</Code> to require a key on every{" "}
-        <Code>/v1/*</Code> route. Both header styles are accepted —{" "}
+        Start the server with <Code>--api-key</Code> to require a key on{" "}
+        <strong className="text-text">every route</strong> except the liveness
+        probes (<Code>/</Code>, <Code>/health</Code>, <Code>/healthz</Code>) —{" "}
+        <Code>GET /metrics</Code> included, since it leaks request and token
+        counts. Both header styles are accepted —{" "}
         <Code>Authorization: Bearer &lt;key&gt;</Code> (OpenAI) or{" "}
         <Code>x-api-key: &lt;key&gt;</Code> (Anthropic) — so either SDK
         authenticates unchanged. The request body is size-capped to guard against

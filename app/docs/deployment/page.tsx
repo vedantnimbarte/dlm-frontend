@@ -33,14 +33,23 @@ export default function Deployment() {
 
       <DocH2 id="auth">Authentication</DocH2>
       <DocP>
-        Pass <Code>--api-key</Code> to require a key on every{" "}
-        <Code>/v1/*</Code> route. Requests without a matching{" "}
-        <Code>Authorization: Bearer …</Code> (OpenAI) or <Code>x-api-key</Code>{" "}
-        (Anthropic) header are rejected.
+        Pass <Code>--api-key</Code> to require a key on{" "}
+        <strong className="text-text">every route</strong> except the liveness
+        probes (<Code>/</Code>, <Code>/health</Code>, <Code>/healthz</Code>).
+        Requests without a matching <Code>Authorization: Bearer …</Code> (OpenAI)
+        or <Code>x-api-key</Code> (Anthropic) header are rejected with a{" "}
+        <Code>401</Code>.
       </DocP>
+      <DocNote>
+        That includes <Code>GET /metrics</Code>, which leaks request and token
+        counts — so a Prometheus scrape needs the key too. Only the liveness
+        probes stay open, which is what lets a load balancer health-check the
+        server without holding a credential.
+      </DocNote>
       <div className="mt-5 space-y-2.5">
         <CopyCommand command="dlm serve --model-path /path/to/model --api-key sk-secret" />
         <CopyCommand command="curl -H 'Authorization: Bearer sk-secret' http://127.0.0.1:8000/v1/models" />
+        <CopyCommand command="curl -H 'Authorization: Bearer sk-secret' http://127.0.0.1:8000/metrics" />
       </div>
 
       <DocH2 id="bind">Bind address</DocH2>
@@ -62,7 +71,10 @@ export default function Deployment() {
           to guard against a hostile <Code>Content-Length</Code>.
         </DocLi>
         <DocLi>
-          Bearer auth covers all <Code>/v1/*</Code> endpoints when enabled.
+          When enabled, auth covers every endpoint —{" "}
+          <Code>/v1/*</Code> and <Code>/metrics</Code> alike — except the{" "}
+          <Code>/</Code>, <Code>/health</Code> and <Code>/healthz</Code> liveness
+          probes.
         </DocLi>
       </DocUl>
 

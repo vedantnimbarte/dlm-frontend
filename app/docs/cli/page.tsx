@@ -180,7 +180,7 @@ export default function Cli() {
           [<Code key="f">--auto-prefetch</Code>, "Auto-tune the prefetch depth from measured load-vs-compute time."],
           [<Code key="f">--kv-quant int8 | int4</Code>, "Quantize the KV cache — int8 ≈ half the memory, int4 ≈ a quarter (default none)."],
           [<Code key="f">--device gpu</Code>, "Run the batched engine on the CUDA kernel (cuda-kernels build)."],
-          [<Code key="f">--api-key</Code>, "Require a bearer token on /v1/*."],
+          [<Code key="f">--api-key</Code>, "Require a key on every route except the /, /health and /healthz liveness probes — /metrics included. Sent as Authorization: Bearer or x-api-key."],
           [<Code key="f">--chat-template</Code>, "plain | chatml | llama3."],
           [<Code key="f">--eos-token</Code>, "Stop on this token id — overrides the eos_token_id auto-detected from config.json."],
           [<Code key="f">--draft-model-path</Code>, "Enable speculative decoding with a draft model."],
