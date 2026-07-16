@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { fetchModels } from "@/lib/hf";
 
 // Searchable provider combobox. Options are Hugging Face authors: the top ones
 // by default, and — as you type — authors derived from a live hub search, so it
@@ -57,12 +58,8 @@ export function ProviderSelect({
     const ctrl = new AbortController();
     setLoading(true);
     const t = window.setTimeout(() => {
-      fetch(`/api/hf-models?q=${encodeURIComponent(term)}`, {
-        signal: ctrl.signal,
-      })
-        .then((r) => (r.ok ? r.json() : Promise.reject()))
-        .then((d) => {
-          const models: { id: string }[] = Array.isArray(d.models) ? d.models : [];
+      fetchModels("all", term, ctrl.signal)
+        .then((models) => {
           setOptions([...new Set(models.map((m) => m.id.split("/")[0]))].slice(0, 25));
           setLoading(false);
         })

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { CopyCommand } from "@/components/CopyCommand";
 import {
   DocTitle,
@@ -70,7 +71,7 @@ export default function DocsOverview() {
       <DocH2 id="sections">Explore the docs</DocH2>
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {CARDS.map((c) => (
-          <a
+          <Link
             key={c.href}
             href={c.href}
             className="glass glass-interactive flex flex-col rounded-card p-5 transition-colors"
@@ -81,7 +82,7 @@ export default function DocsOverview() {
             <p className="mt-2 text-[0.85rem] leading-relaxed text-text-muted">
               {c.body}
             </p>
-          </a>
+          </Link>
         ))}
       </div>
 

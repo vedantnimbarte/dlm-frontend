@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Reveal } from "./Reveal";
 
 const REPO = "https://github.com/vedantnimbarte/dlm";
@@ -17,9 +18,9 @@ export function CTASection() {
                 model fit where it shouldn&rsquo;t. No GPU required to try it.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
-                <a href="/get-started" className="btn-primary">
+                <Link href="/get-started" className="btn-primary">
                   Get started
-                </a>
+                </Link>
                 <a
                   href={REPO}
                   className="btn-secondary"

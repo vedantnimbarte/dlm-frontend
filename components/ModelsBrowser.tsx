@@ -3,16 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { CopyCommand } from "./CopyCommand";
 import { ProviderSelect } from "./ProviderSelect";
+import { fetchModels, fetchProviders, type HfModel as Model } from "@/lib/hf";
 
-interface Model {
-  id: string;
-  downloads: number;
-  likes: number;
-  pipeline_tag: string | null;
-  safetensors: boolean;
-}
-
-// Keep keys in sync with CATEGORIES in app/api/hf-models/route.ts.
+// Keep keys in sync with CATEGORIES in lib/hf.ts.
 const CATEGORIES = [
   { key: "all", label: "All" },
   { key: "coding", label: "Coding" },
@@ -37,12 +30,13 @@ export function ModelsBrowser() {
   // Providers (hub authors): chips show the top few, the dropdown shows all.
   const [providers, setProviders] = useState<string[]>([]);
 
-  // Fetch the broad provider list once, from the dedicated endpoint.
+  // Fetch the broad provider list once, straight from the hub.
   useEffect(() => {
-    fetch("/api/hf-providers")
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((d) => setProviders(Array.isArray(d.providers) ? d.providers : []))
+    const ctrl = new AbortController();
+    fetchProviders(ctrl.signal)
+      .then(setProviders)
       .catch(() => {});
+    return () => ctrl.abort();
   }, []);
 
   // Debounced search, with stale-response cancellation.
@@ -50,13 +44,9 @@ export function ModelsBrowser() {
     const ctrl = new AbortController();
     const t = window.setTimeout(() => {
       setStatus("loading");
-      fetch(
-        `/api/hf-models?category=${category}&q=${encodeURIComponent(query.trim())}`,
-        { signal: ctrl.signal }
-      )
-        .then((r) => (r.ok ? r.json() : Promise.reject()))
-        .then((d) => {
-          setModels(Array.isArray(d.models) ? d.models : []);
+      fetchModels(category, query, ctrl.signal)
+        .then((m) => {
+          setModels(m);
           setStatus("idle");
         })
         .catch((e) => {

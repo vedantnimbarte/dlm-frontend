@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { DOCS_NAV } from "./docsNav";
 import { DocsSearch } from "./DocsSearch";
 
@@ -15,27 +16,35 @@ export function DocsSidebar() {
           <ul className="mt-2 space-y-0.5">
             {g.items.map((l) => {
               const active = pathname === l.href;
+              const cls = `block rounded-[6px] px-2 py-1.5 text-[0.85rem] transition-colors ${
+                active
+                  ? "bg-accent-stream/10 font-medium text-accent-stream"
+                  : "text-text-muted hover:bg-white/[0.04] hover:text-text"
+              }`;
               return (
                 <li key={l.href}>
-                  <a
-                    href={l.href}
-                    aria-current={active ? "page" : undefined}
-                    {...(l.external
-                      ? { target: "_blank", rel: "noreferrer" }
-                      : {})}
-                    className={`block rounded-[6px] px-2 py-1.5 text-[0.85rem] transition-colors ${
-                      active
-                        ? "bg-accent-stream/10 font-medium text-accent-stream"
-                        : "text-text-muted hover:bg-white/[0.04] hover:text-text"
-                    }`}
-                  >
-                    {l.label}
-                    {l.external ? (
+                  {l.external ? (
+                    <a
+                      href={l.href}
+                      aria-current={active ? "page" : undefined}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={cls}
+                    >
+                      {l.label}
                       <span className="ml-1 text-text-muted" aria-hidden>
                         ↗
                       </span>
-                    ) : null}
-                  </a>
+                    </a>
+                  ) : (
+                    <Link
+                      href={l.href}
+                      aria-current={active ? "page" : undefined}
+                      className={cls}
+                    >
+                      {l.label}
+                    </Link>
+                  )}
                 </li>
               );
             })}

@@ -48,9 +48,14 @@ export default function Troubleshooting() {
           [
             <>Won&rsquo;t fit / even one layer exceeds the budget</>,
             <>
-              Use a smaller model, more VRAM, a shorter{" "}
-              <Code>--context-length</Code>, or fewer{" "}
-              <Code>--resident-layers</Code>. See{" "}
+              Start with <Code>--quant int4</Code> — it shrinks each layer 4x at
+              load and often removes streaming entirely. Then lower{" "}
+              <Code>--safety-margin-gb</Code> (default 1.5; try{" "}
+              <Code>0.5</Code> on a 4 GB card), shorten{" "}
+              <Code>--context-length</Code>, and only then fall back to{" "}
+              <Code>--stream</Code>/<Code>--resident-layers</Code> for whatever
+              still doesn&rsquo;t fit. See{" "}
+              <DocA href="/docs/quantization">Quantization</DocA> and{" "}
               <DocA href="/docs/performance">Performance tuning</DocA>.
             </>,
           ],
@@ -122,9 +127,14 @@ export default function Troubleshooting() {
 
       <DocH3>Which quantization formats load?</DocH3>
       <DocP>
-        Float weights (F32/F16/BF16) and GPTQ-style 4-bit projections, dequantized
-        on load. See <DocA href="/docs/models">Model support</DocA> for the
-        details and caveats.
+        Float safetensors only (F32/F16/BF16). Already-quantized GPTQ/AWQ
+        checkpoints are{" "}
+        <strong className="text-text">refused at load</strong>, not
+        silently mis-loaded. To quantize, use{" "}
+        <Code>--quant int4</Code> or <Code>--quant int8</Code> on a float
+        checkpoint — dlm quantizes it itself at load. See{" "}
+        <DocA href="/docs/quantization">Quantization</DocA> and{" "}
+        <DocA href="/docs/models">Model support</DocA>.
       </DocP>
 
       <DocH3>Is the output deterministic?</DocH3>

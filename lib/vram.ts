@@ -3,10 +3,12 @@
 //   LayersToLoad = floor( (M_free − M_safety − M_kv_total − M_pinned) / M_layer_weight )
 //   clamped to [1, N_layers]
 //
-// Constants below are Q4-weight-class figures chosen so the headline case
-// (70B @ 16 GB, 8192 ctx) resolves to ~29/80 layers (~36% resident), matching
-// the README. Every number the visualizer shows comes from here — no invented
-// figures downstream.
+// The curated MODELS below are specced per-layer at int4 (0.5 bytes/param) and
+// re-scaled by `withQuant` for other precisions. int4 is NOT dlm's default: with
+// no `--quant`, the engine computes in the checkpoint's own dtype (bf16/f16 →
+// 2 bytes/param), so callers must pass the precision explicitly rather than
+// inheriting an int4 baseline. Every number the visualizer shows comes from
+// here — no invented figures downstream.
 
 export interface ModelSpec {
   id: string;
@@ -19,7 +21,10 @@ export interface ModelSpec {
   computeCeilingTps: number; // compute-bound tok/s if fully resident (est.)
 }
 
-export const SAFETY_GB = 0.6; // driver / workspace headroom, model-independent
+// Activation-spike cushion held back from the budget. Matches the engine's
+// `--safety-margin-gb` default (1.5 GiB); lower it on a small card to fit more
+// layers, raise it if you hit OOM.
+export const SAFETY_GB = 1.5;
 export const DEFAULT_CONTEXT = 8192;
 
 export const MODELS: ModelSpec[] = [
@@ -168,13 +173,16 @@ export interface Quant {
   bytesPerParam: number;
 }
 
+// Labels name the `--quant` value that produces each footprint. `fp16` is what
+// you get with no `--quant` at all on a bf16/f16 checkpoint — the honest
+// baseline; int4/int8 are quantized down from that float checkpoint at load.
 export const QUANTS: Quant[] = [
-  { id: "q4", label: "Q4", bytesPerParam: 0.5 },
-  { id: "q8", label: "Q8", bytesPerParam: 1 },
-  { id: "fp16", label: "FP16", bytesPerParam: 2 },
+  { id: "q4", label: "int4", bytesPerParam: 0.5 },
+  { id: "q8", label: "int8", bytesPerParam: 1 },
+  { id: "fp16", label: "fp16", bytesPerParam: 2 },
 ];
 
-// The curated MODELS above are specced at Q4. Re-scale weights for other quants.
+// The curated MODELS above are specced per-layer at int4. Re-scale for others.
 export const BASE_BYTES_PER_PARAM = 0.5;
 
 export function withQuant(model: ModelSpec, bytesPerParam: number): ModelSpec {

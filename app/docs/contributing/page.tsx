@@ -81,7 +81,7 @@ export default function Contributing() {
           [<Code key="p">src/profiler</Code>, "The VRAM budget math."],
           [<Code key="p">src/server</Code>, "The OpenAI-compatible HTTP server and engine."],
           [<Code key="p">src/distributed</Code>, "Sharding, the coordinator, and the worker protocol."],
-          [<Code key="p">src/loader.rs</Code>, "Safetensors + GPTQ weight loading."],
+          [<Code key="p">src/loader.rs</Code>, "Float safetensors weight loading (F32/F16/BF16) — GPTQ/AWQ qweight checkpoints are refused here."],
         ]}
       />
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Section } from "@/components/Section";
@@ -24,9 +25,9 @@ const STEPS = [
   {
     n: "01",
     title: "Install the binary",
-    body: "One line downloads a prebuilt binary for your platform (Linux/macOS, x86-64 or arm64) into ~/.local/bin. No clone, no Rust toolchain, no build.",
+    body: "One line downloads a prebuilt binary for your platform — Linux x86-64/arm64, macOS Apple Silicon, or Windows x86-64. No clone, no Rust toolchain, no build. Every download is checksum-verified against a published .sha256 before it is unpacked or run.",
     command: INSTALL,
-    note: "On Linux x86-64 with an NVIDIA GPU the installer picks the CUDA build and runs on the GPU by default. Everywhere else it installs the portable CPU build. Set DLM_CPU=1 to force CPU; DLM_INSTALL_DIR to change the location.",
+    note: "Linux/macOS installs into ~/.local/bin. On Windows, run irm https://raw.githubusercontent.com/vedantnimbarte/dlm/main/install.ps1 | iex — it installs into %LOCALAPPDATA%\\Programs\\dlm and adds it to PATH. On x86-64 Linux or Windows with an NVIDIA GPU the installer picks the CUDA build and runs on the GPU by default. Everywhere else — no NVIDIA GPU, arm64, macOS — it installs the portable CPU build; an AMD GPU gets the CPU build too. Set DLM_CPU=1 to force CPU; DLM_INSTALL_DIR to change the location.",
   },
   {
     n: "02",
@@ -54,9 +55,9 @@ const ISSUES: { symptom: React.ReactNode; fix: React.ReactNode }[] = [
         Use a smaller model, more VRAM, a shorter{" "}
         <span className="font-mono text-text">--context-length</span>, or fewer{" "}
         <span className="font-mono text-text">--resident-layers</span>. See{" "}
-        <a href="/docs/performance" className="text-accent-stream underline-offset-2 hover:underline">
+        <Link href="/docs/performance" className="text-accent-stream underline-offset-2 hover:underline">
           Performance tuning
-        </a>
+        </Link>
         .
       </>
     ),
@@ -67,9 +68,9 @@ const ISSUES: { symptom: React.ReactNode; fix: React.ReactNode }[] = [
       <>
         dlm loads <span className="text-text">safetensors only</span>. Pull a
         safetensors variant or convert the checkpoint. See{" "}
-        <a href="/docs/models" className="text-accent-stream underline-offset-2 hover:underline">
+        <Link href="/docs/models" className="text-accent-stream underline-offset-2 hover:underline">
           Model support
-        </a>
+        </Link>
         .
       </>
     ),
@@ -104,9 +105,9 @@ const ISSUES: { symptom: React.ReactNode; fix: React.ReactNode }[] = [
       <>
         A CPU-only build can&rsquo;t use the GPU. Rebuild with{" "}
         <span className="font-mono text-text">--features cuda-kernels</span>. See{" "}
-        <a href="/docs/build" className="text-accent-stream underline-offset-2 hover:underline">
+        <Link href="/docs/build" className="text-accent-stream underline-offset-2 hover:underline">
           Build &amp; features
-        </a>
+        </Link>
         .
       </>
     ),
@@ -257,7 +258,7 @@ export default function GetStarted() {
             <PrereqCard
               label="GPU runtime"
               value="optional"
-              note="CUDA 12.x or ROCm 6.x — only for the GPU build. Host fallback needs neither."
+              note="CUDA 12.x — only for the CUDA build. Host fallback needs nothing; the rocm feature needs no toolkit (memory-only)."
             />
           </div>
 
@@ -371,9 +372,15 @@ export default function GetStarted() {
                         <div className="space-y-3">
                           <CopyCommand command="ROCM_PATH=/opt/rocm cargo build --features rocm" />
                           <p className="text-[0.78rem] text-text-muted">
-                            Needs ROCm 6.x with amdhip64 on the library path.
-                            Everything above the backend is identical across
-                            vendors.
+                            <span className="text-text">
+                              This build runs inference on the CPU.
+                            </span>{" "}
+                            The rocm feature is memory management only — VRAM
+                            query and pinned host memory — with no compute
+                            kernels, so it needs no ROCm toolkit to build and
+                            buys no GPU compute. CUDA is the only backend with
+                            working kernels today; AMD GPU compute (a HIP port of
+                            kernels.cu) is planned, not yet available.
                           </p>
                         </div>
                       ),
@@ -428,12 +435,12 @@ export default function GetStarted() {
           <Reveal delay={120} className="mt-8 max-w-2xl">
             <p className="text-[0.9rem] leading-relaxed text-text-muted">
               Still stuck? The full{" "}
-              <a
+              <Link
                 href="/docs/troubleshooting"
                 className="text-accent-stream underline-offset-2 hover:underline"
               >
                 Troubleshooting guide
-              </a>{" "}
+              </Link>{" "}
               has the complete error list and an FAQ. If it&rsquo;s a bug, file
               an issue — include your <span className="font-mono text-text">dlm doctor</span> output.
             </p>

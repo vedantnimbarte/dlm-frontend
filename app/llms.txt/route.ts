@@ -1,8 +1,7 @@
 import { DOCS_NAV } from "@/components/docsNav";
+import { SITE_URL as SITE } from "@/lib/site";
 
 export const dynamic = "force-static";
-
-const SITE = "https://dlm.dev";
 
 // llms.txt — a plain-text map of the site for LLMs and crawlers.
 // https://llmstxt.org/
@@ -10,15 +9,18 @@ export function GET() {
   const lines: string[] = [
     "# dlm",
     "",
-    "> dlm (Dynamic LLM) is an open-source Rust inference engine that streams",
-    "> transformer layers in and out of VRAM as it computes, so a 70B model runs",
-    "> on 16 GB of consumer VRAM. It serves an OpenAI- and Anthropic-compatible",
+    "> dlm (Dynamic LLM) is an open-source Rust inference engine for running",
+    "> models bigger than your VRAM, on whatever card you have — 4, 6, 8, 16 GB",
+    "> or more. `--quant int4|int8` quantizes the weights at load so more of the",
+    "> model stays resident; whatever still doesn't fit is streamed through a",
+    "> bounded window of layers. It serves an OpenAI- and Anthropic-compatible",
     "> HTTP API.",
     "",
     "## Pages",
     `- [Home](${SITE}/)`,
     `- [How it works](${SITE}/how-it-works)`,
     `- [Benchmarks](${SITE}/benchmarks)`,
+    `- [VRAM calculator](${SITE}/calculator)`,
     `- [Models](${SITE}/models)`,
     `- [Get started](${SITE}/get-started)`,
     `- [About](${SITE}/about)`,

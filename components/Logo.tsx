@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { asset } from "@/lib/site";
 
 // The brushed-steel hex mark is the brand — it replaces the old text wordmark.
 // The mark ships with its own soft dark vignette, so it seats cleanly on the
@@ -15,7 +16,7 @@ export function Logo({
 }) {
   return (
     <Image
-      src="/logo-mark.png"
+      src={asset("/logo-mark.png")}
       alt="dlm"
       width={size}
       height={size}

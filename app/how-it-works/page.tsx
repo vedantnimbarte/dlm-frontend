@@ -11,11 +11,13 @@ import { MODELS, computeVram, SAFETY_GB, DEFAULT_CONTEXT, pct } from "@/lib/vram
 export const metadata: Metadata = {
   title: "How it works",
   description:
-    "The deep dive: VRAM partitioning, the double-buffered A/B schedule, the tiered data path, the LayersToLoad formula with a worked 70B example, the compute-kernel trait, and the serve-and-scale stack.",
+    "The deep dive: VRAM partitioning, the LRU streaming window and copy-stream prefetch, the tiered data path, the LayersToLoad formula with a worked 70B example, the compute-kernel trait, and the serve-and-scale stack.",
 };
 
 // Worked example computed from the same formula the engine uses — no invented
-// numbers. Defaults match the README headline case (70B @ 16 GB → 29/80).
+// numbers. The curated 70B spec is specced per-layer at int4, so this example is
+// the `--quant int4` case; at the checkpoint's own 16-bit dtype the same model
+// keeps far fewer layers resident.
 const M = MODELS.find((m) => m.id === "70b")!;
 const R = computeVram(M, 16);
 
@@ -107,34 +109,38 @@ export default function HowItWorks() {
           <ZoneDiagram />
         </Section>
 
-        {/* The A/B schedule */}
+        {/* The streaming schedule */}
         <Section
           eyebrow="The schedule"
-          title="Two buffers, swapped every window."
-          intro="The streaming zone holds two buffers, A and B. While A executes on the compute stream, B is DMA-ing the next window of layers in over PCIe. When A finishes, they swap — B computes, A loads. The swap is the whole trick: transfer hides under compute, so the GPU rarely waits on the bus."
+          title="An LRU window, one copy stream ahead."
+          intro="At serve time the streaming zone is an LRU of N layers. A miss uploads that layer on a dedicated copy stream — so the transfer overlaps compute on the default stream — and evicts the least-recently-used. A background worker prefetches the next --prefetch-depth layers ahead of compute. Be honest about the limit: with a window smaller than the model, layers are touched in order and evicted long before they come round again, so the window does not really cache. Its job is to hide the next upload under the current compute — and what streaming costs is bandwidth."
         >
           <Reveal delay={80} className="mt-10">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="glass glass-interactive rounded-card p-6">
                 <div className="mb-3 flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-[3px] bg-accent-compute" aria-hidden />
-                  <span className="eyebrow">Buffer A · executing</span>
+                  <span className="eyebrow">Default stream · executing</span>
                 </div>
                 <div className="buffer-a h-8 rounded-[4px]" aria-hidden />
                 <p className="mt-3 text-[0.85rem] leading-relaxed text-text-muted">
                   The resident window runs the transformer math for this token,
-                  layer by layer, threading each layer's real K/V history.
+                  layer by layer, threading each layer&rsquo;s real K/V history.
+                  KV for every layer stays resident, so attention always sees the
+                  full history.
                 </p>
               </div>
               <div className="glass glass-interactive rounded-card p-6">
                 <div className="mb-3 flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-[3px] bg-accent-stream" aria-hidden />
-                  <span className="eyebrow">Buffer B · streaming in</span>
+                  <span className="eyebrow">Copy stream · prefetching</span>
                 </div>
                 <div className="buffer-b h-8 rounded-[4px]" aria-hidden />
                 <p className="mt-3 text-[0.85rem] leading-relaxed text-text-muted">
-                  The next window DMAs into VRAM from the pinned staging buffer,
-                  asynchronously, so it's ready the instant A finishes.
+                  The prefetch worker DMAs the next layers into VRAM from the
+                  pinned staging buffer, evicting least-recently-used ones to make
+                  room. <code>--auto-prefetch</code> tunes the depth from measured
+                  load-vs-compute time.
                 </p>
               </div>
             </div>
@@ -209,7 +215,9 @@ export default function HowItWorks() {
                       {pct(R.residentFraction)}%
                     </span>{" "}
                     in VRAM — and the other {R.streamedLayers} stream through the
-                    A/B window. A 70B model fits on a 16 GB card.
+                    resident window. That&rsquo;s a 70B model on a 16 GB card at{" "}
+                    <code>--quant int4</code>; without it, the checkpoint&rsquo;s
+                    own 16-bit weights make each layer 4x heavier.
                   </p>
                 </div>
               </div>

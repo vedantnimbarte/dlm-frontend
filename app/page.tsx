@@ -19,7 +19,7 @@ const softwareJsonLd = {
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Linux, macOS, Windows",
   description:
-    "Open-source Rust inference engine that streams transformer layers through VRAM to run 70B+ models on consumer GPUs.",
+    "Open-source Rust inference engine that quantizes transformer weights at load and streams what still doesn't fit, so consumer GPUs run models bigger than their VRAM.",
   license: "https://www.apache.org/licenses/LICENSE-2.0",
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 };
@@ -38,23 +38,27 @@ export default function Home() {
         {/* 2 · The problem */}
         <Section
           eyebrow="The hardware wall"
-          title="A 70B model wants ~40 GB. Your card has 16."
-          intro="Resident loading means the whole model sits in VRAM at once. That math has kept the best open models off consumer hardware — until you stop assuming every layer must be present at the same time."
+          title="The model doesn't fit. That's the whole problem."
+          intro="Resident loading means every weight sits in VRAM at once, so the card's size is a hard yes-or-no on the model. dlm answers that two ways: shrink the weights so they fit, and stream whatever still doesn't. It's not a 16 GB tool — it's for the 4 GB laptop GPU, the 6 GB gaming card, the 8 GB workstation."
         >
           <Reveal delay={80}>
             <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
               <ContrastCell
-                k="Resident load, 70B"
-                v="~40 GB"
-                note="won't fit"
+                k="Llama-3.2-3B, bf16"
+                v="5.6 GB"
+                note="won't fit a 4 GB card"
                 danger
               />
-              <ContrastCell k="A consumer card" v="16 GB" note="what you own" />
               <ContrastCell
-                k="With dlm"
-                v="29 layers"
-                note="resident, rest streamed"
+                k="--quant int4"
+                v="4.2 tok/s"
+                note="all 28 layers resident — no streaming"
                 stream
+              />
+              <ContrastCell
+                k="bf16, --stream"
+                v="0.024 tok/s"
+                note="5 / 28 resident — it runs, slowly"
               />
             </div>
           </Reveal>
@@ -62,18 +66,18 @@ export default function Home() {
 
         {/* 3 · The mechanic */}
         <Section
-          eyebrow="How dlm works"
-          title="Three zones, two buffers, one continuous stream."
-          intro="VRAM is partitioned into a pinned zone that never moves, a streaming zone that holds a working window of layers, and a cache that spills to CPU RAM and NVMe. The window streams forward faster than the GPU can drain it."
+          eyebrow="Reach for this first"
+          title="Quantize before you stream."
+          intro="--quant int4 shrinks each layer 4x at load (int8: 2x), which usually means more of the model stays resident and streaming shrinks or stops entirely — worth far more than any amount of making streaming itself faster. Measured on a 4 GB GTX 1650: a 3B model that doesn't fit in 16-bit goes from 0.024 tok/s streamed to 4.2 tok/s fully resident."
         >
           <ZoneDiagram />
         </Section>
 
         {/* 4 · The data path */}
         <Section
-          eyebrow="The data path"
-          title="Each layer travels from disk to compute — just in time."
-          intro="A layer is memory-mapped from NVMe, cached in host RAM, staged in a pinned buffer, and streamed into VRAM before the GPU asks for it. Every stage runs ahead of compute."
+          eyebrow="The fallback"
+          title="What still doesn't fit gets streamed."
+          intro="A layer is memory-mapped from NVMe, held in an optional host-RAM cache, staged in a page-locked buffer, and uploaded on a dedicated copy stream so the transfer overlaps compute. Be clear-eyed about the limit: streaming costs bandwidth, and moving most of a model across the bus every token costs far more than the arithmetic does. The window doesn't really cache — its job is to hide the next upload under the current compute."
         >
           <DataPathPipeline />
         </Section>
@@ -82,16 +86,16 @@ export default function Home() {
         <Section
           eyebrow="What's in the box"
           title="A complete inference engine."
-          intro="The streaming core, the GPU kernels, the server loop, and the scaling stack — all shipped and running today."
+          intro="Load-time quantization, the streaming core, the CUDA kernels, the server loop, and the scaling stack — shipped and running today."
         >
           <FeatureGrid />
         </Section>
 
         {/* 6 · Proof */}
         <Section
-          eyebrow="Modeled, with conditions"
+          eyebrow="Measured, with conditions"
           title="The numbers, and exactly when they hold."
-          intro="Resident-layer counts come from the engine's own budget math; the tok/s band is a projection from a throughput model, not a measured benchmark. Every figure states its hardware so you can judge it against your own."
+          intro="The tok/s figures below were measured on a 4 GB GTX 1650; the resident-layer count comes from the engine's own budget math. Every figure states its hardware and its --quant setting so you can judge it against your own. The projected throughput model lives on the benchmarks page, labelled as a projection."
         >
           <ProofStats />
         </Section>
@@ -100,28 +104,29 @@ export default function Home() {
         <Section
           eyebrow="See it decide"
           title="Point the profiler at your card. Read the plan."
-          intro="No weights loaded, no GPU required — dlm profile does the budget math and tells you what will stay resident before you commit."
+          intro="No weights loaded, no GPU required — dlm profile does the budget math and tells you what will stay resident before you commit. Pass --model-path to profile a real checkpoint from its measured layer sizes."
         >
           <Reveal delay={80} className="mt-10 max-w-3xl">
             <TerminalBlock
-              command="dlm profile --model llama-3-70b --vram 16"
-              caption="Simulated profile on a 16 GB card, Q4 weights, 8,192-token context."
+              command="dlm profile --quant int4"
+              caption="Built-in Llama-3-70B-class sample against a simulated 16 GB card, 8,192-token context. Without --quant the same model computes at the checkpoint's own 16-bit dtype — a 1.7 GiB layer, and only 7 of 80 fit."
               lines={[
-                { text: "  detecting device ............ GPU 0 · 16.0 GB free", tone: "muted" },
-                { text: "  model .......................  llama-3-70b · 80 layers · Q4", tone: "muted" },
+                { text: "  gpu backend  : none (host fallback)", tone: "muted" },
+                { text: "  geometry     : 80 layers, hidden 8192, 64 q-heads / 8 kv-heads", tone: "muted" },
+                { text: "  quantization : Int4 (0.5 bytes/param), ~70.6 B params", tone: "muted" },
                 { text: "", tone: "muted" },
-                { text: "  budget", tone: "text" },
-                { text: "    safety headroom ..........   0.6 GB", tone: "muted" },
-                { text: "    pinned  (embed·norm·head) .   0.9 GB", tone: "pinned" },
-                { text: "    kv cache (8192 ctx) .......   2.8 GB", tone: "pinned" },
-                { text: "    layer weight ..............   0.40 GB / layer", tone: "muted" },
+                { text: "  ── VRAM PLAN ─────────────────────────────────", tone: "text" },
+                { text: "    M_free           :    16384.0 MiB", tone: "muted" },
+                { text: "    M_safety         :     1536.0 MiB", tone: "pinned" },
+                { text: "    M_kv_total       :     2560.0 MiB", tone: "pinned" },
+                { text: "    M_layer_weight   :      420.5 MiB", tone: "muted" },
+                { text: "    usable           :    12288.0 MiB", tone: "muted" },
+                { text: "    ▶ layers_to_load :          29 / 80", tone: "stream" },
+                { text: "    ▶ resident       :       36.2%", tone: "stream" },
+                { text: "  ──────────────────────────────────────────────", tone: "text" },
                 { text: "", tone: "muted" },
-                { text: "  plan", tone: "text" },
-                { text: "    resident ..................  29 / 80 layers  (36%)", tone: "stream" },
-                { text: "    streamed ..................  51 layers via A/B double buffer", tone: "compute" },
-                { text: "    est. throughput ...........  5–12 tok/s", tone: "text" },
-                { text: "", tone: "muted" },
-                { text: "  ✓ fits — 70B on 16 GB. run `dlm serve` to start.", tone: "stream" },
+                { text: "  swap cycle   : 3 streaming pass(es), window of 29 layer(s)", tone: "compute" },
+                { text: "  pipeline     : 4 steps, 2 overlapped (DMA hidden under compute)", tone: "compute" },
               ]}
             />
           </Reveal>
@@ -130,8 +135,8 @@ export default function Home() {
         {/* 8 · Roadmap teaser */}
         <Section
           eyebrow="Built in the open"
-          title="Every phase, shipped."
-          intro="dlm is built in the open, one phase at a time — the streaming core, the GPU kernels, and the full serving stack are all merged and shipped."
+          title="What's shipped, and what isn't."
+          intro="dlm is built in the open, one phase at a time — the streaming core, the CUDA kernels, and the full serving stack are merged and shipped. AMD GPU compute is not: the ROCm feature manages memory today and runs inference on the CPU."
         >
           <RoadmapTimeline />
         </Section>

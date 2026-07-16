@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { VramVisualizer } from "./VramVisualizer";
 import { HeroMark } from "./HeroMark";
 
@@ -13,16 +14,17 @@ export function Hero() {
           Dynamic layer-streaming inference
         </span>
         <h1 className="mt-5 max-w-4xl font-display text-[clamp(2.2rem,5.4vw,4.1rem)] font-semibold leading-[0.98] tracking-[-0.03em] text-text animate-fade-up [animation-delay:60ms]">
-          Run a 70B model on 16&nbsp;GB of VRAM.
+          Run models bigger than your VRAM.
         </h1>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-text-muted animate-fade-up [animation-delay:120ms]">
-          dlm streams transformer layers in and out of your GPU as it computes —
-          so model size stops being a hardware wall.
+          Whatever card you have — 4, 6, 8, 16&nbsp;GB or more. dlm quantizes the
+          weights at load so more of the model stays resident, and streams
+          whatever still doesn&rsquo;t fit.
         </p>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3 animate-fade-up [animation-delay:180ms]">
-          <a href="/get-started" className="btn-primary">
+          <Link href="/get-started" className="btn-primary">
             Get started
-          </a>
+          </Link>
           <a
             href={REPO}
             className="btn-secondary"

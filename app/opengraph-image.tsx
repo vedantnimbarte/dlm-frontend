@@ -1,6 +1,9 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "dlm — Run a 70B model on 16 GB of VRAM";
+// Static export: render the card once at build time, not per request.
+export const dynamic = "force-static";
+
+export const alt = "dlm — Run models bigger than your VRAM";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

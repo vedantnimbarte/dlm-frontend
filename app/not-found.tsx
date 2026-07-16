@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 
@@ -29,13 +30,13 @@ export default function NotFound() {
             instead:
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="/" className="btn-primary">
+            <Link href="/" className="btn-primary">
               Back home
-            </a>
+            </Link>
             {LINKS.slice(1).map((l) => (
-              <a key={l.href} href={l.href} className="btn-secondary">
+              <Link key={l.href} href={l.href} className="btn-secondary">
                 {l.label}
-              </a>
+              </Link>
             ))}
           </div>
         </section>

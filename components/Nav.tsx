@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { Logo } from "./Logo";
 
 const LINKS = [
@@ -15,7 +16,7 @@ const LINKS = [
 // Highlighted CTA for the VRAM calculator — the headline interactive tool.
 function CanIRunIt({ onClick }: { onClick?: () => void }) {
   return (
-    <a
+    <Link
       href="/calculator"
       onClick={onClick}
       className="inline-flex h-9 items-center gap-2 rounded-full border border-accent-stream/50 bg-accent-stream/15 px-3.5 text-[0.875rem] font-medium text-accent-stream transition-colors hover:border-accent-stream/70 hover:bg-accent-stream/25"
@@ -25,7 +26,7 @@ function CanIRunIt({ onClick }: { onClick?: () => void }) {
         <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent-stream" />
       </span>
       Can I run it?
-    </a>
+    </Link>
   );
 }
 
@@ -78,14 +79,14 @@ export function Nav() {
       <nav className="shell flex h-16 items-center gap-2" aria-label="Primary">
         {/* Brand mark — hidden at the top of the page, slides in once scrolled
             (desktop). Always visible on mobile, where there's no center rail. */}
-        <a
+        <Link
           href="/"
           className="nav-logo items-center rounded-full p-0.5"
           data-show={scrolled}
           aria-label="dlm — home"
         >
           <Logo size={32} priority />
-        </a>
+        </Link>
 
         {/* Desktop rail: spacers carry the center→right glide of the links.
             A hidden ghost of the CTA on the left balances the real CTA's width,
@@ -102,13 +103,13 @@ export function Nav() {
           <span className="nav-spacer" style={{ flexGrow: 1 }} aria-hidden />
           <div className="flex items-center gap-8">
             {links.map((l) => (
-              <a
+              <Link
                 key={l.href}
                 href={l.href}
                 className="text-[0.9375rem] text-text-muted transition-colors hover:text-text"
               >
                 {l.label}
-              </a>
+              </Link>
             ))}
           </div>
           <span
@@ -144,14 +145,14 @@ export function Nav() {
               <CanIRunIt onClick={() => setOpen(false)} />
             </div>
             {links.map((l) => (
-              <a
+              <Link
                 key={l.href}
                 href={l.href}
                 className="rounded-btn px-2 py-2.5 text-text-muted hover:bg-white/5 hover:text-text"
                 onClick={() => setOpen(false)}
               >
                 {l.label}
-              </a>
+              </Link>
             ))}
             <a
               href={REPO}

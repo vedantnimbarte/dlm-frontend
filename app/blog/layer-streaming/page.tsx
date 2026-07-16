@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import {
@@ -25,12 +26,12 @@ export default function LayerStreamingPost() {
       <Nav />
       <main id="main">
         <article className="shell max-w-2xl py-16 sm:py-20">
-          <a
+          <Link
             href="/blog"
             className="font-mono text-[0.75rem] text-text-muted transition-colors hover:text-text"
           >
             ← Blog
-          </a>
+          </Link>
           <div className="mt-6 flex items-center gap-3 font-mono text-[0.7rem] uppercase tracking-eyebrow text-text-muted">
             <span>{formatDate(post.date)}</span>
             <span aria-hidden>·</span>
@@ -79,24 +80,34 @@ export default function LayerStreamingPost() {
               moving them would thrash the bus. They stay resident, permanently.
             </DocLi>
             <DocLi>
-              <strong className="text-text">Streaming zone</strong> — two buffers,
-              A and B, holding the working window of layers. This is where the
-              churn happens.
+              <strong className="text-text">Streaming zone</strong> — a window of
+              layers, held as an LRU sized by <Code>--resident-layers</Code>. This
+              is where the churn happens.
             </DocLi>
             <DocLi>
               <strong className="text-text">Cache zone</strong> — the
-              PagedAttention KV cache and residual activations, spilling to a
-              tiered CPU-RAM cache backed by memory-mapped NVMe weights.
+              PagedAttention KV cache and residual activations. KV for every layer
+              stays resident here even as the weights come and go, so attention
+              always sees the full history.
             </DocLi>
           </DocUl>
 
-          <DocH2 id="schedule">The swap is the trick</DocH2>
+          <DocH2 id="schedule">The overlap is the trick</DocH2>
           <DocP>
-            The streaming zone holds two buffers so it can hide the transfer.
-            While buffer A executes the current window on the compute stream,
-            buffer B is DMA-ing the next window into VRAM over PCIe. When A
-            finishes, they swap — B computes, A loads. Transfer runs under compute,
-            so the GPU rarely stalls on the bus.
+            The window is an LRU. A layer the window already holds computes
+            straight away; a miss uploads it on a dedicated copy stream — DMA-ing
+            over PCIe while the default stream keeps computing — and evicts the
+            least-recently-used layer to make room. A background prefetch worker
+            (<Code>--prefetch-depth</Code>, or <Code>--auto-prefetch</Code> to tune
+            it from measured load-vs-compute time) runs ahead of the pointer so the
+            upload has already started by the time the layer is wanted.
+          </DocP>
+          <DocP>
+            Calling it a cache flatters it. With a window smaller than the model,
+            layers are touched in order and each one is evicted long before it comes
+            round again — the hit rate is near zero by construction. The window
+            isn&rsquo;t there to avoid the transfer. It&rsquo;s there to hide it
+            under the compute.
           </DocP>
           <DocP>
             Each streamed layer travels a tiered path:{" "}
@@ -118,7 +129,7 @@ export default function LayerStreamingPost() {
             </Code>
             , clamped to [1, N]. For a 70B model on 16 GB with an 8k context, that
             lands at 29 of 80 layers resident — the other 51 stream through the
-            A/B window.
+            window.
           </DocNote>
           <DocP>
             Everything after the fixed costs — a safety cushion, the KV cache for
@@ -132,9 +143,15 @@ export default function LayerStreamingPost() {
             Streaming isn&rsquo;t free. The more a model has to stream, the more
             the token rate leans on how fast the bus and NVMe can feed the window.
             The win isn&rsquo;t peak throughput — it&rsquo;s that the model runs at
-            all, on hardware that could never hold it resident. And the levers to
-            claw back speed — a wider resident window, a warm cache, speculative
-            decoding — are all there. See{" "}
+            all, on hardware that could never hold it resident. Overlap hides the
+            transfer; it doesn&rsquo;t shorten it, and the only way to pay less
+            bandwidth is to send fewer bytes. So the first lever is{" "}
+            <Code>--quant int4|int8</Code>, which shrinks every layer 2–4x and
+            often removes the need to stream at all; then{" "}
+            <Code>--ram-cache-gb</Code> to keep materialized layers in host RAM, and
+            a wider <Code>--resident-layers</Code> window if the budget allows. (
+            <Code>--stream</Code> and speculative decoding don&rsquo;t combine yet —
+            dlm rejects the pair at startup.) See{" "}
             <DocA href="/docs/performance">Performance tuning</DocA>.
           </DocP>
 

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 
 // Small set of presentational primitives shared by every /docs page — keeps the
 // typography consistent without a `prose` dependency, and lets pages interleave
@@ -81,15 +82,16 @@ export function DocA({
   href: string;
   children: ReactNode;
 }) {
-  const external = href.startsWith("http");
-  return (
-    <a
-      href={href}
-      className="text-accent-stream underline-offset-2 transition-colors hover:underline"
-      {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
-    >
+  const cls =
+    "text-accent-stream underline-offset-2 transition-colors hover:underline";
+  return href.startsWith("http") ? (
+    <a href={href} className={cls} target="_blank" rel="noreferrer">
       {children}
     </a>
+  ) : (
+    <Link href={href} className={cls}>
+      {children}
+    </Link>
   );
 }
 
@@ -165,7 +167,7 @@ export function DocPager({
   return (
     <nav className="mt-16 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:justify-between">
       {prev ? (
-        <a
+        <Link
           href={prev.href}
           className="glass glass-interactive group rounded-card px-4 py-3 transition-colors sm:max-w-[48%]"
         >
@@ -173,12 +175,12 @@ export function DocPager({
             ← Previous
           </div>
           <div className="mt-1 text-[0.9rem] text-text">{prev.label}</div>
-        </a>
+        </Link>
       ) : (
         <span />
       )}
       {next ? (
-        <a
+        <Link
           href={next.href}
           className="glass glass-interactive group rounded-card px-4 py-3 text-right transition-colors sm:max-w-[48%]"
         >
@@ -186,7 +188,7 @@ export function DocPager({
             Next →
           </div>
           <div className="mt-1 text-[0.9rem] text-text">{next.label}</div>
-        </a>
+        </Link>
       ) : (
         <span />
       )}

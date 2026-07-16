@@ -58,7 +58,7 @@ export default function Library() {
           [<Code key="m">profiler</Code>, "The VRAM plan — the LayersToLoad budget math."],
           [
             <Code key="m">loader</Code>,
-            "Reads HF-named safetensors (float + GPTQ 4-bit) into the transformer, embedding, and LM head.",
+            "Reads HF-named float safetensors (F32/F16/BF16) into the transformer, embedding, and LM head.",
           ],
           [<Code key="m">generate</Code>, "The end-to-end token → logits → sample loop."],
           [

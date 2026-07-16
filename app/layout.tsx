@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { AuroraBackground } from "@/components/AuroraBackground";
 import { PointerSheen } from "@/components/PointerSheen";
+import { SITE_URL } from "@/lib/site";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,14 +24,15 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const siteUrl = "https://dlm.dev";
+const siteUrl = SITE_URL;
+const title = "dlm — Run models bigger than your VRAM";
 const description =
-  "dlm streams transformer layers in and out of your GPU as it computes — so a 70B model runs on 16 GB of VRAM. Open-source Rust inference engine.";
+  "dlm quantizes transformer weights at load and streams what still doesn't fit, so your GPU runs models above its weight class — 4, 6, 8, 16 GB or more. Open-source Rust inference engine.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "dlm — Run a 70B model on 16 GB of VRAM",
+    default: title,
     template: "%s · dlm",
   },
   description,
@@ -38,12 +40,14 @@ export const metadata: Metadata = {
     "LLM inference",
     "layer streaming",
     "local LLM",
-    "70B on consumer GPU",
+    "quantization",
+    "int4",
+    "run LLM on small GPU",
     "Rust inference engine",
     "VRAM",
   ],
   openGraph: {
-    title: "dlm — Run a 70B model on 16 GB of VRAM",
+    title,
     description,
     url: siteUrl,
     siteName: "dlm",
@@ -51,7 +55,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "dlm — Run a 70B model on 16 GB of VRAM",
+    title,
     description,
   },
   robots: { index: true, follow: true },

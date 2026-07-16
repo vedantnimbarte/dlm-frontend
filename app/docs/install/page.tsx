@@ -35,22 +35,46 @@ export default function Install() {
 
       <DocH2 id="binary">Prebuilt binary</DocH2>
       <DocP>
-        Downloads a binary for your platform (Linux/macOS, x86-64 or arm64) into{" "}
-        <Code>~/.local/bin</Code>.
+        Prebuilt targets: Linux x86-64/arm64, macOS Apple Silicon, Windows
+        x86-64. Every download is checksum-verified against a published{" "}
+        <Code>.sha256</Code> before it is unpacked or run. (Intel Macs: build
+        from source with <Code>cargo install</Code>.)
+      </DocP>
+      <DocP>
+        <strong className="text-text">Linux / macOS</strong> — installs into{" "}
+        <Code>~/.local/bin</Code>:
       </DocP>
       <div className="mt-5">
         <CopyCommand command="curl -fsSL https://raw.githubusercontent.com/vedantnimbarte/dlm/main/install.sh | sh" />
       </div>
+      <DocP>
+        <strong className="text-text">Windows</strong> — installs into{" "}
+        <Code>%LOCALAPPDATA%\Programs\dlm</Code> and adds it to <Code>PATH</Code>:
+      </DocP>
+      <div className="mt-5">
+        <CopyCommand command="irm https://raw.githubusercontent.com/vedantnimbarte/dlm/main/install.ps1 | iex" />
+      </div>
       <DocUl>
         <DocLi>
-          On <strong className="text-text">Linux x86-64 with an NVIDIA GPU</strong>{" "}
+          On{" "}
+          <strong className="text-text">
+            x86-64 Linux or Windows with an NVIDIA GPU
+          </strong>{" "}
           the installer picks the CUDA (GPU) build and runs on the GPU by
-          default. Everywhere else it installs the portable CPU build.
+          default. Everywhere else — no NVIDIA GPU, arm64, macOS — it installs
+          the portable CPU build.
         </DocLi>
         <DocLi>
-          Force the CPU build with <Code>DLM_CPU=1 curl … | sh</Code>. If the GPU
-          build can&rsquo;t load its CUDA runtime, the installer falls back to CPU
-          on its own.
+          An <strong className="text-text">AMD GPU gets the CPU build</strong> —
+          dlm has no AMD GPU compute kernels yet, so there is nothing to pick.
+          AMD GPU compute is planned; see{" "}
+          <DocA href="#gpu-builds">GPU builds</DocA>.
+        </DocLi>
+        <DocLi>
+          Force the CPU build with <Code>DLM_CPU=1</Code> (before the curl, or
+          before the Windows one-liner). If the GPU build won&rsquo;t start —
+          driver missing or too old — the installer says so and falls back to the
+          CPU build on its own.
         </DocLi>
         <DocLi>
           Set <Code>DLM_INSTALL_DIR</Code> to change the install location.
@@ -109,8 +133,9 @@ export default function Install() {
           [
             "GPU runtime (optional)",
             <>
-              CUDA Toolkit 12.x or ROCm 6.x — only for the GPU build. The host
-              fallback needs neither.
+              CUDA Toolkit 12.x — only for the CUDA build. The host fallback
+              needs nothing, and the <Code key="c">rocm</Code> feature needs no
+              toolkit to build (it&rsquo;s memory-only).
             </>,
           ],
         ]}
@@ -153,6 +178,17 @@ export default function Install() {
         enables the GPU kernel; it needs nvcc + a GPU to build a runnable binary.{" "}
         <Code>cargo check --features cuda-kernels</Code> type-checks the FFI
         without the toolkit.
+      </DocNote>
+      <DocNote tone="compute">
+        <strong className="text-text">
+          The <Code>rocm</Code> build still runs inference on the CPU.
+        </strong>{" "}
+        It is memory management only — VRAM query and pinned host memory — with{" "}
+        <strong className="text-text">no compute kernels</strong>, so it needs no
+        ROCm toolkit to build and buys no GPU compute. NVIDIA (CUDA) is the only
+        backend with working kernels today, verified on real hardware against the
+        CPU oracle. AMD GPU compute — a HIP port of <Code>kernels.cu</Code> — is{" "}
+        <strong className="text-text">planned, not yet available</strong>.
       </DocNote>
 
       <DocH2 id="verify">Verify</DocH2>

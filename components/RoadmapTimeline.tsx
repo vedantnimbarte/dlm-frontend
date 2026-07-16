@@ -17,7 +17,7 @@ const PHASES = [
     title: "On the GPU",
     status: "shipped",
     items: [
-      "CUDA / ROCm compute kernels",
+      "CUDA compute kernels — AMD/ROCm compute planned",
       "PagedAttention KV cache",
       "Speculative decoding",
     ],

@@ -37,19 +37,55 @@ export default function Build() {
       <DocTable
         head={["Feature", "Vendor", "Runtime", "Env var"]}
         rows={[
-          [<Code key="f">cuda</Code>, "NVIDIA", <Code key="r">cudart</Code>, <Code key="e">CUDA_PATH</Code>],
+          [
+            <Code key="f">cuda</Code>,
+            "NVIDIA",
+            <>
+              <Code>cudart</Code> (dynamic)
+            </>,
+            <Code key="e">CUDA_PATH</Code>,
+          ],
           [
             <Code key="f">cuda-kernels</Code>,
             "NVIDIA",
             <>
-              <Code>cudart</Code> + compiled <Code>kernels.cu</Code> (nvcc)
+              dynamic <Code>cudart</Code> + compiled <Code>kernels.cu</Code>{" "}
+              (nvcc)
             </>,
             <Code key="e">CUDA_PATH</Code>,
           ],
-          [<Code key="f">rocm</Code>, "AMD", <Code key="r">amdhip64</Code>, <Code key="e">ROCM_PATH</Code>],
+          [
+            <Code key="f">cuda-static</Code>,
+            "NVIDIA",
+            <>
+              <strong className="text-text">static</strong> <Code>cudart</Code>{" "}
+              baked in — runs on the driver alone
+            </>,
+            <Code key="e">CUDA_PATH</Code>,
+          ],
+          [
+            <Code key="f">rocm</Code>,
+            "AMD",
+            <>
+              <Code>amdhip64</Code> — memory only, no compute yet (planned)
+            </>,
+            <Code key="e">ROCM_PATH</Code>,
+          ],
           [<em key="f">(none)</em>, "—", "host fallback", "—"],
         ]}
       />
+      <DocNote tone="compute">
+        <strong className="text-text">
+          NVIDIA (CUDA) is the only backend with working compute kernels
+        </strong>{" "}
+        — verified on real hardware against the CPU oracle (
+        <Code>tests/gpu_parity.rs</Code>). The <Code>rocm</Code> feature provides{" "}
+        <strong className="text-text">memory management only</strong> — VRAM
+        query and pinned host memory — and has no compute kernels, so on an AMD
+        GPU inference <strong className="text-text">falls back to the CPU</strong>
+        . AMD GPU compute — a HIP port of <Code>kernels.cu</Code> — is planned,
+        not yet available.
+      </DocNote>
       <DocUl>
         <DocLi>
           <Code>cuda-kernels</Code> additionally compiles{" "}
@@ -58,11 +94,26 @@ export default function Build() {
           nvcc + a GPU.
         </DocLi>
         <DocLi>
+          <strong className="text-text">
+            The prebuilt release ships the <Code>cuda-static</Code> build
+          </strong>{" "}
+          (Linux and Windows x86-64). A static CUDA runtime means the toolkit is
+          needed only at <em>build</em> time — the shipped binary runs on any
+          machine with just the NVIDIA driver. <Code>cuda-static</Code> is a
+          strict superset of <Code>cuda-kernels</Code>, so there is no separate
+          dynamic release asset.
+        </DocLi>
+        <DocLi>
           The two GPU features are <strong className="text-text">mutually exclusive</strong>.
           With one enabled, buffers are genuine page-locked memory and{" "}
           <Code>mem_get_info</Code> reports the live device&rsquo;s free VRAM.
         </DocLi>
       </DocUl>
+      <DocNote>
+        <Code>cargo check --features cuda-kernels</Code> type-checks the Rust FFI
+        without the toolkit; building a binary that <em>runs</em> the kernels
+        needs nvcc + a GPU.
+      </DocNote>
 
       <DocH2 id="build-commands">Build commands</DocH2>
       <DocP>
@@ -101,8 +152,12 @@ export default function Build() {
           <strong className="text-text">GPU by default</strong>.
         </DocLi>
         <DocLi>
-          <Code>--device cpu</Code> forces the CPU kernel; if no GPU is usable, dlm
-          warns and falls back to CPU on its own.
+          <Code>--device cpu</Code> forces the CPU kernel.
+        </DocLi>
+        <DocLi>
+          When the GPU is selected — <Code>--device gpu</Code>, or the default on
+          a <Code>cuda-kernels</Code> build — and no GPU is usable, dlm warns and
+          falls back to CPU on its own.
         </DocLi>
         <DocLi>
           A CPU-only build defaults to CPU, and an explicit <Code>--device gpu</Code>{" "}

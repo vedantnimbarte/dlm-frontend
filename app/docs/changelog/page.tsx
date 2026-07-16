@@ -76,6 +76,18 @@ export default function Changelog() {
       <DocH2 id="streaming">Streaming & memory</DocH2>
       <DocUl>
         <DocLi>
+          <strong className="text-text">Weight quantization</strong> —{" "}
+          <Code>--quant int4 | int8</Code> quantizes a float checkpoint at load
+          (group-affine, groups of 128) for layers 4x or 2x smaller — usually
+          enough for more of the model to stay resident and streaming to shrink or
+          stop. See <DocA href="/docs/quantization">Quantization</DocA>.
+        </DocLi>
+        <DocLi>
+          <strong className="text-text">Tunable safety margin</strong> —{" "}
+          <Code>--safety-margin-gb</Code> overrides the fixed 1.5 GiB cushion in
+          the budget math, so small cards can claw it back for resident layers.
+        </DocLi>
+        <DocLi>
           <strong className="text-text">Layer prefetch</strong> — the streaming
           engine loads the next layers while the current one computes, hiding
           load latency under the math. <Code>--prefetch-depth N</Code> sets how
@@ -104,8 +116,9 @@ export default function Changelog() {
           models straight from the hub, no <Code>hf</Code> CLI needed.
         </DocLi>
         <DocLi>
-          Loader handles safetensors float (F32/F16/BF16) and GPTQ-style 4-bit
-          projections.
+          Loader handles safetensors float (F32/F16/BF16) only — already-quantized
+          GPTQ/AWQ checkpoints are rejected at load rather than
+          silently mis-read. See <DocA href="/docs/quantization">Quantization</DocA>.
         </DocLi>
       </DocUl>
 

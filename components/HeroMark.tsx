@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { asset } from "@/lib/site";
 
 // The logo-reveal moment. On load the mark rises out of a dark radial "well"
 // in the aurora — scale + blur settle over ~1s, then a one-time specular sheen
@@ -52,7 +53,7 @@ export function HeroMark() {
         className={`hero-mark-tilt ${revealed ? "is-revealed" : ""}`}
       >
         <Image
-          src="/logo-mark.png"
+          src={asset("/logo-mark.png")}
           alt=""
           width={520}
           height={520}

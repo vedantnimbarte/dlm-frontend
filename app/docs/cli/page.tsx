@@ -56,6 +56,12 @@ export default function Cli() {
       <div className="mt-5">
         <CopyCommand command="dlm search llama-3.2" />
       </div>
+      <DocTable
+        head={["Flag", "Purpose"]}
+        rows={[
+          [<Code key="f">--limit</Code>, "Maximum results to show (default 20)."],
+        ]}
+      />
 
       {/* pull */}
       <DocH2 id="pull">pull</DocH2>
@@ -99,20 +105,41 @@ export default function Cli() {
       </div>
       <TerminalBlock
         command="dlm profile"
-        caption="Built-in sample, simulated 16 GB card, Q4 weights, 8,192-token context."
+        caption="Built-in sample, simulated 16 GB card, 16-bit checkpoint dtype (no --quant), 8,192-token context."
         lines={[
           { text: "  gpu backend  : none (host fallback)", tone: "muted" },
           { text: "  geometry     : 80 layers, hidden 8192, 64 q / 8 kv heads", tone: "muted" },
-          { text: "  quantization : Int4 (0.5 bytes/param), ~70.6 B params", tone: "muted" },
+          { text: "  quantization : Fp16 (2 bytes/param), ~70.6 B params", tone: "muted" },
           { text: "  ── VRAM PLAN ──────────────────────────────", tone: "text" },
-          { text: "    M_free           :  16384.0 MiB", tone: "muted" },
-          { text: "    M_safety         :   1536.0 MiB", tone: "pinned" },
-          { text: "    M_kv_total       :   2560.0 MiB", tone: "pinned" },
-          { text: "    M_layer_weight   :    420.5 MiB", tone: "muted" },
-          { text: "    ▶ layers_to_load :     29 / 80", tone: "stream" },
-          { text: "    ▶ resident       :     36.2%", tone: "stream" },
+          { text: "    M_free           :    16384.0 MiB", tone: "muted" },
+          { text: "    M_safety         :     1536.0 MiB", tone: "pinned" },
+          { text: "    M_kv_total       :     2560.0 MiB", tone: "pinned" },
+          { text: "    pinned_zone      :        0.0 MiB", tone: "pinned" },
+          { text: "    M_layer_weight   :     1682.1 MiB", tone: "muted" },
+          { text: "    usable           :    12288.0 MiB", tone: "muted" },
+          { text: "    ▶ layers_to_load :          7 / 80", tone: "stream" },
+          { text: "    ▶ resident       :       8.8%", tone: "stream" },
           { text: "  ────────────────────────────────────────────", tone: "text" },
-          { text: "  swap cycle   : 3 streaming pass(es), window of 29 layer(s)", tone: "compute" },
+          { text: "  kv cache     : 512 paged blocks × 16 tok, 5.00 MiB/block → 8192 token capacity", tone: "muted" },
+          { text: "  swap cycle   : 12 streaming pass(es), window of 7 layer(s)", tone: "compute" },
+          { text: "  pipeline     : 4 steps, 2 overlapped (DMA hidden under compute)", tone: "compute" },
+        ]}
+      />
+      <DocP>
+        The sample assumes 16-bit weights, so a layer is 1.7 GiB and only 7 of 80
+        fit. <Code>--quant int4</Code> quantizes the weights at load, dropping a
+        layer to 420 MiB so the same 16 GiB holds 29 (<Code>int8</Code>: 841 MiB,
+        14) — see <DocA href="/docs/quantization">Quantization</DocA>.
+      </DocP>
+      <DocTable
+        head={["Flag", "Purpose"]}
+        rows={[
+          [<Code key="f">--model-path</Code>, "Model directory to profile. Omit for the built-in 70B-class sample."],
+          [<Code key="f">--context-length</Code>, "Target context window in tokens (default 8192)."],
+          [<Code key="f">--quant int4 | int8</Code>, "Weight precision to plan against. Defaults to the checkpoint's own dtype."],
+          [<Code key="f">--vram-budget-gb</Code>, "Manual upper VRAM cap. Overrides the live device query."],
+          [<Code key="f">--safety-margin-gb</Code>, "Activation-spike cushion (default 1.5 GiB)."],
+          [<Code key="f">--ram-cache-gb</Code>, "Host-RAM layer cache budget for the plan."],
         ]}
       />
       <DocP>
@@ -135,6 +162,13 @@ export default function Cli() {
         head={["Flag", "Purpose"]}
         rows={[
           [<Code key="f">--model-path</Code>, "Directory with config.json + *.safetensors."],
+          [
+            <Code key="f">--quant int4 | int8</Code>,
+            "The primary memory lever — 4x/2x smaller layers at load, so more stays resident and streaming shrinks or stops. Defaults to the checkpoint's own dtype.",
+          ],
+          [<Code key="f">--vram-budget-gb</Code>, "Manual upper VRAM cap. Overrides the live device query."],
+          [<Code key="f">--safety-margin-gb</Code>, "Activation-spike cushion (default 1.5 GiB). Lower it on a small card (e.g. 0.5 on a 4 GB GPU); raise it if you hit OOM."],
+          [<Code key="f">--ram-cache-gb</Code>, "Host-RAM layer cache — roughly 2x on the streamed path. Off by default."],
           [<Code key="f">--port</Code> , "TCP port (default 8000)."],
           [<Code key="f">--host</Code>, "Bind address (default 127.0.0.1)."],
           [<Code key="f">--context-length</Code>, "KV context window in tokens."],
@@ -148,7 +182,9 @@ export default function Cli() {
           [<Code key="f">--device gpu</Code>, "Run the batched engine on the CUDA kernel (cuda-kernels build)."],
           [<Code key="f">--api-key</Code>, "Require a bearer token on /v1/*."],
           [<Code key="f">--chat-template</Code>, "plain | chatml | llama3."],
+          [<Code key="f">--eos-token</Code>, "Stop on this token id — overrides the eos_token_id auto-detected from config.json."],
           [<Code key="f">--draft-model-path</Code>, "Enable speculative decoding with a draft model."],
+          [<Code key="f">--draft-gamma N</Code>, "Draft tokens proposed per speculative round (default 4). Only used with --draft-model-path."],
           [<Code key="f">--prefix-cache-size</Code>, "Cache N prompt-prefix KV snapshots so shared prefixes skip re-prefill."],
           [<Code key="f">--multi-gpu-ids</Code>, "Pipeline-parallel across local GPUs, e.g. 0,1,2."],
           [<Code key="f">--distributed-mode</Code>, "master --worker-nodes … coordinates shards; worker serves one shard over TCP."],
@@ -166,6 +202,26 @@ export default function Cli() {
         <CopyCommand command={`dlm generate --model-path /path/to/small-model --text "Hello"`} />
         <CopyCommand command="dlm generate --prompt 1,2,3 --max-new-tokens 8 --seed 42" />
       </div>
+      <DocTable
+        head={["Flag", "Purpose"]}
+        rows={[
+          [<Code key="f">--model-path</Code>, "Load a real model from this directory (config.json + safetensors)."],
+          [<Code key="f">--text</Code>, "Prompt as text, tokenized with the BPE tokenizer. Overrides --prompt."],
+          [<Code key="f">--prompt</Code>, "Prompt as comma-separated token ids (default 1)."],
+          [<Code key="f">--tokenizer</Code>, "Tokenizer directory. Defaults to the model directory if it has one, else a raw byte tokenizer."],
+          [<Code key="f">--max-new-tokens</Code>, "Number of new tokens to generate (default 16)."],
+          [<Code key="f">--eos-token</Code>, "Stop when this token id is produced."],
+          [<Code key="f">--seed</Code>, "PRNG seed for the synthetic weights (default 0)."],
+          [<Code key="f">--device gpu | cpu</Code>, "Compute device. Defaults to gpu on a cuda-kernels build, else cpu."],
+        ]}
+      />
+      <DocNote>
+        The synthetic-model geometry flags (<Code>--vocab-size</Code>,{" "}
+        <Code>--hidden-size</Code>, <Code>--num-layers</Code>,{" "}
+        <Code>--num-heads</Code>, <Code>--num-kv-heads</Code>,{" "}
+        <Code>--intermediate-size</Code>) are ignored when{" "}
+        <Code>--model-path</Code> is set.
+      </DocNote>
       <DocNote tone="compute">
         On a <Code>cuda-kernels</Code> build, generation runs on the GPU by
         default; <Code>--device cpu</Code> forces the CPU kernel. A CPU-only build
@@ -187,6 +243,18 @@ export default function Cli() {
         lines={[
           { text: "  ids        : [72, 101, 108, 108, 111, 44, 32, ...]", tone: "muted" },
           { text: '  round-trip : "Hello, world!" (ok)', tone: "stream" },
+        ]}
+      />
+      <DocTable
+        head={["Flag", "Purpose"]}
+        rows={[
+          [
+            <Code key="f">--tokenizer</Code>,
+            <>
+              Directory with <Code>vocab.json</Code> + <Code>merges.txt</Code>.
+              Defaults to a raw byte tokenizer (256 tokens, no merges).
+            </>,
+          ],
         ]}
       />
 

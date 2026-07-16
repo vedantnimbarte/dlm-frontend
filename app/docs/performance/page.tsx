@@ -18,7 +18,7 @@ import { docPager } from "@/components/docsNav";
 export const metadata: Metadata = {
   title: "Performance tuning",
   description:
-    "The levers that move tok/s: the resident window, warm NVMe cache and PCIe, speculative decoding, continuous batching, context length, and quantization.",
+    "The levers that move tok/s: --quant first, then the resident window, host-RAM cache, warm NVMe and PCIe, speculative decoding, continuous batching, and context length.",
 };
 
 export default function Performance() {
@@ -36,6 +36,18 @@ export default function Performance() {
       <DocTable
         head={["Lever", "Effect"]}
         rows={[
+          [
+            <Code key="l">--quant int4 | int8</Code>,
+            <>
+              Shrinks each layer 2–4x at load, so more of the model stays
+              resident and streaming shrinks or stops entirely — worth far more
+              than making streaming itself faster. On a 4 GB GTX 1650,
+              Llama-3.2-3B goes from{" "}
+              <strong className="text-text">0.024 tok/s</strong> streaming bf16
+              to <strong className="text-text">4.2 tok/s</strong> fully resident
+              at int4. See <DocA href="/docs/quantization">Quantization</DocA>.
+            </>,
+          ],
           [
             <Code key="l">--resident-layers</Code>,
             "More resident layers → fewer streaming passes → closer to the compute ceiling. Fewer → fits a bigger model. Start at the profiler's plan.",
@@ -69,11 +81,18 @@ export default function Performance() {
             "Quantize the KV cache — int8 ≈ half its memory, int4 ≈ a quarter. At long context the KV cache can exceed the weights, so this frees budget for more resident layers; int4 trades more approximation for more room.",
           ],
           [
-            "Quantization",
-            "Q4 weights are ~0.5 bytes/param, so more layers fit per gigabyte. The loader dequantizes GPTQ-style 4-bit projections on load.",
+            <Code key="l">--ram-cache-gb N</Code>,
+            "A host-RAM LRU of materialized layers, so an evicted layer isn't re-read and re-decoded — roughly 2x on the streamed path. Off by default: it duplicates weights in RAM on top of the OS page cache.",
           ],
         ]}
       />
+      <DocNote tone="compute">
+        <Code>--stream</Code> plus a quantized <Code>--quant</Code> currently
+        re-quantizes a layer on every window miss — slower than either flag
+        alone. Pair it with <Code>--ram-cache-gb</Code>, or drop{" "}
+        <Code>--stream</Code>: once quantized, the model often no longer needs
+        it.
+      </DocNote>
 
       <DocH2 id="measure">Measure your setup first</DocH2>
       <DocP>
@@ -93,9 +112,12 @@ export default function Performance() {
       <DocH2 id="recipes">Recipes</DocH2>
       <DocUl>
         <DocLi>
-          <strong className="text-text">Biggest model that fits</strong> — lower{" "}
-          <Code>--resident-layers</Code> and shorten <Code>--context-length</Code>
-          , trading tok/s for capacity.
+          <strong className="text-text">Biggest model that fits</strong> —{" "}
+          <Code>--quant int4</Code> first (4x smaller layers is what actually
+          makes a model fit), then shorten <Code>--context-length</Code>, and
+          stream only what&rsquo;s left over. Lowering{" "}
+          <Code>--resident-layers</Code> shrinks the window, it does not make a
+          model fit.
         </DocLi>
         <DocLi>
           <strong className="text-text">Fastest single stream</strong> — raise{" "}

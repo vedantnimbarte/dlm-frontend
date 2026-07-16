@@ -1,10 +1,14 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL as base } from "@/lib/site";
 
-const base = "https://dlm.dev";
+// `output: export` has no server to generate this per request — emit it as a
+// static file at build time.
+export const dynamic = "force-static";
 const routes = [
   "",
   "/how-it-works",
   "/benchmarks",
+  "/calculator",
   "/models",
   "/get-started",
   "/about",

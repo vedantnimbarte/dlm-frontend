@@ -12,8 +12,13 @@ const FEATURES = [
     state: "shipped",
   },
   {
-    title: "OpenAI-compatible API",
-    body: "Drop-in /v1/chat/completions endpoint, so existing clients and SDKs point at dlm with a URL change.",
+    title: "Quantize at load — the lever that matters",
+    body: "--quant int4 shrinks each layer 4x (int8: 2x) from a float checkpoint, so more of the model stays resident and streaming shrinks or stops entirely. On a 4 GB card it took a 3B model from 0.024 tok/s streamed to 4.2 fully resident.",
+    state: "shipped",
+  },
+  {
+    title: "OpenAI + Anthropic API",
+    body: "/v1/chat/completions, /v1/completions, /v1/messages and count_tokens — with SSE streaming, bearer or x-api-key auth, and Prometheus /metrics. Either SDK points at dlm with a URL change.",
     state: "shipped",
   },
   {
@@ -22,18 +27,18 @@ const FEATURES = [
     state: "shipped",
   },
   {
-    title: "Double-buffered async streaming",
-    body: "The A/B buffer schedule overlaps PCIe transfer with GPU compute, so layer loading hides under the math.",
+    title: "Layer streaming, for what still won't fit",
+    body: "A bounded LRU window of layers; a miss uploads on a dedicated copy stream so the transfer overlaps compute, and evicts least-recently-used. Output is bit-for-bit identical to a fully-resident run — but streaming costs bandwidth, so quantize first.",
     state: "shipped",
   },
   {
     title: "Speculative decoding",
-    body: "A small draft model proposes tokens the large model verifies in batches — more tokens per resident window.",
+    body: "A small draft model proposes tokens the large model verifies in bulk; with greedy sampling the output is provably identical to plain decoding. Per-request acceptance lands in the usage response.",
     state: "shipped",
   },
   {
     title: "Multi-GPU / multi-node scaling",
-    body: "Partition the layer stack across cards and hosts to widen the resident window and push throughput up.",
+    body: "Pipeline-parallel across local GPUs, or shard layers across worker nodes over TCP with heartbeats and local fallback. Scheduling, routing and correctness are implemented and tested on CPU over localhost; NCCL/RCCL transport is future work.",
     state: "shipped",
   },
   {

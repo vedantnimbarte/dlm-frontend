@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import {
   VRAM_PRESETS,
   PARAM_PRESETS,
@@ -362,9 +363,9 @@ export function VramCalculator() {
             </>
           )}
         </p>
-        <a href="/models" className="btn-secondary h-9 shrink-0 px-3.5 text-[0.85rem]">
+        <Link href="/models" className="btn-secondary h-9 shrink-0 px-3.5 text-[0.85rem]">
           Browse models that fit (~{maxForMode}B) →
-        </a>
+        </Link>
       </div>
     </div>
   );

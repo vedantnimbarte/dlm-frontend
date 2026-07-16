@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo } from "./Logo";
 import { ReportBug } from "./ReportBug";
 
@@ -32,9 +33,9 @@ export function Footer() {
     <footer className="rule">
       <div className="shell grid grid-cols-2 gap-8 py-14 sm:grid-cols-4">
         <div className="col-span-2 sm:col-span-2">
-          <a href="/" className="inline-flex rounded-full p-0.5" aria-label="dlm — home">
+          <Link href="/" className="inline-flex rounded-full p-0.5" aria-label="dlm — home">
             <Logo size={34} />
-          </a>
+          </Link>
           <p className="mt-4 max-w-xs text-[0.85rem] leading-relaxed text-text-muted">
             Dynamic layer-streaming inference. Run massive models on the hardware
             you already have.
@@ -46,15 +47,23 @@ export function Footer() {
             <ul className="mt-3 space-y-2">
               {c.links.map((l) => (
                 <li key={l.label}>
-                  <a
-                    href={l.href}
-                    className="text-[0.85rem] text-text-muted transition-colors hover:text-text"
-                    {...(l.href.startsWith("http")
-                      ? { target: "_blank", rel: "noreferrer" }
-                      : {})}
-                  >
-                    {l.label}
-                  </a>
+                  {l.href.startsWith("http") ? (
+                    <a
+                      href={l.href}
+                      className="text-[0.85rem] text-text-muted transition-colors hover:text-text"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {l.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={l.href}
+                      className="text-[0.85rem] text-text-muted transition-colors hover:text-text"
+                    >
+                      {l.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>

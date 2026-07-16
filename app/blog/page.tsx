@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Reveal } from "@/components/Reveal";
@@ -32,7 +33,7 @@ export default function Blog() {
           <div className="flex flex-col gap-4">
             {POSTS.map((p, i) => (
               <Reveal key={p.slug} delay={i * 80}>
-                <a
+                <Link
                   href={`/blog/${p.slug}`}
                   className="glass glass-interactive block rounded-card p-6 sm:p-7"
                 >
@@ -50,7 +51,7 @@ export default function Blog() {
                   <span className="mt-4 inline-block text-[0.85rem] text-accent-stream">
                     Read →
                   </span>
-                </a>
+                </Link>
               </Reveal>
             ))}
           </div>
